@@ -8,4 +8,14 @@ declare(strict_types=1);
 define('ABSPATH', __DIR__ . '/');
 
 require dirname(__DIR__) . '/vendor/autoload.php';
-require glob(dirname(__DIR__) . '/dist/*/vendor/autoload.php')[0];
+require dirname(__DIR__) . '/dist/vpndetection/vendor/autoload.php';
+
+function __(string $text, string $domain = 'default'): string
+{
+    return $text;
+}
+
+function sanitize_key(string $key): string
+{
+    return preg_replace('/[^a-z0-9_\-]/', '', strtolower($key)) ?? '';
+}

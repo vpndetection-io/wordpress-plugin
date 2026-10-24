@@ -1,0 +1,79 @@
+.vpnd .vpnd-card {
+    max-width: 52rem;
+    margin: 1rem 0;
+    padding: 0.25rem 1.25rem 0.75rem;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.vpnd .vpnd-card h2 {
+    font-size: 1.1em;
+}
+
+.vpnd .vpnd-warn {
+    padding-left: 0.75rem;
+    border-left: 4px solid #dba617;
+}
+
+.vpnd .vpnd-signals {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.75rem 1.5rem;
+    max-width: 52rem;
+    margin: 0.5rem 0 1rem;
+}
+
+.vpnd .vpnd-signal .description {
+    display: block;
+    margin-left: 1.6rem;
+}
+
+.vpnd .vpnd-badge {
+    display: inline-block;
+    margin-left: 0.25rem;
+    padding: 0 0.4rem;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #50575e;
+    background: #f0f0f1;
+    border-radius: 3px;
+}
+
+.vpnd .vpnd-areas th {
+    width: 12rem;
+}
+
+.vpnd .vpnd-inline {
+    margin-right: 1rem;
+}
+
+.vpnd .vpnd-inline-form {
+    display: inline;
+}
+
+.vpnd .vpnd-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    margin: 1em 0;
+}
+
+.vpnd .vpnd-summary {
+    max-width: 40rem;
+    margin-bottom: 1.5rem;
+}
+
+.vpnd .vpnd-key summary,
+.vpnd .vpnd-advanced summary {
+    cursor: pointer;
+}
+
+.vpnd .vpnd-advanced summary h2 {
+    display: inline;
+}
+
+.vpnd [hidden] {
+    display: none !important;
+}
