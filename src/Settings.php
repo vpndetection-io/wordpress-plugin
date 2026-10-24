@@ -31,6 +31,7 @@ final class Settings
 
     private const DEFAULTS = [
         'signals' => ['vpn', 'tor', 'pubproxy', 'resproxy', 'dcproxy', 'hosting'],
+        'countries' => '',
         'min_hits' => 1,
         'areas' => [],
         'admins_sign_in' => true,
@@ -85,13 +86,34 @@ final class Settings
         return defined('VPNDETECTION_API_KEY') && trim((string) constant('VPNDETECTION_API_KEY')) !== '';
     }
 
-    public function message(): string
+    /** What a refused visitor reads: the site's own message, or one that fits why they were refused. */
+    public function message(?Verdict $verdict = null): string
     {
         $message = trim($this->get('message'));
         if ($message !== '') {
             return $message;
         }
+        if ($verdict !== null && $verdict->signals === ['country']) {
+            return __('This site is not available in your country.', 'vpndetection');
+        }
         return __('Your connection comes through a VPN, proxy or hosting network, which this site does not allow. Turn it off and try again.', 'vpndetection');
+    }
+
+    /**
+     * The countries the Countries signal refuses, as two-letter ISO codes.
+     *
+     * @return list<string>
+     */
+    public function countries(): array
+    {
+        return self::countryCodes($this->get('countries'));
+    }
+
+    /** @return list<string> */
+    public static function countryCodes(string $text): array
+    {
+        preg_match_all('/\b[A-Za-z]{2}\b/', $text, $m);
+        return array_values(array_unique(array_map('strtoupper', $m[0])));
     }
 
     /** Forget what was read, after a save in this same request. */
@@ -116,6 +138,7 @@ final class Settings
         $fromForm = !empty($input['form']);
         $out = [];
         $out['signals'] = self::signalList($input['signals'] ?? []) ?? [];
+        $out['countries'] = implode(', ', self::countryCodes((string) ($input['countries'] ?? '')));
         $out['min_hits'] = max(1, min(1000, absint($input['min_hits'] ?? 1)));
         $out['areas'] = [];
         foreach (self::AREAS as $area => $actions) {

@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace VPNDetection\WordPress;
 
+use VPNDetection\WordPress\Vendor\VPNDetection\Result;
+
 defined('ABSPATH') || exit;
 
 /**
  * What the plugin can block on, in the order the settings show it.
  *
  * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: without a
- * key a lookup carries `is_vpn` alone, a free key adds Tor and relays, and every paid plan answers
- * every member.
+ * key a lookup carries `is_vpn` alone, a free key adds Tor, relays, the location and the network, and
+ * every paid plan answers every member.
  */
 final class Signals
 {
@@ -27,8 +29,10 @@ final class Signals
         'resproxy' => ['member' => 'isResproxy', 'detail' => 'resproxy', 'needs' => self::NEEDS_PAID],
         'mobproxy' => ['member' => 'isMobproxy', 'detail' => 'mobproxy', 'needs' => self::NEEDS_PAID],
         'dcproxy' => ['member' => 'isDcproxy', 'detail' => 'dcproxy', 'needs' => self::NEEDS_PAID],
-        'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_PAID],
+        // A paid plan answers is_hosting; a free one is read by its network's type, which it carries.
+        'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_KEY],
         'relay' => ['member' => 'isRelay', 'detail' => 'relay', 'needs' => self::NEEDS_KEY],
+        'country' => ['member' => 'location', 'detail' => 'location', 'needs' => self::NEEDS_KEY],
     ];
 
     /** Signals a pool sighting count applies to, where one sighting can be a shared address. */
@@ -51,6 +55,7 @@ final class Signals
             'dcproxy' => __('Datacenter proxies', 'vpndetection'),
             'hosting' => __('Hosting and cloud servers', 'vpndetection'),
             'relay' => __('Privacy relays', 'vpndetection'),
+            'country' => __('Countries', 'vpndetection'),
             'unavailable' => __('Check unavailable', 'vpndetection'),
             'custom' => __('Custom rule', 'vpndetection'),
             default => $signal,
@@ -66,31 +71,48 @@ final class Signals
             'resproxy' => __('Home connections rented out as proxies.', 'vpndetection'),
             'mobproxy' => __('Phone connections rented out as proxies. Carriers share these addresses with ordinary customers.', 'vpndetection'),
             'dcproxy' => __('Proxies running in datacenters.', 'vpndetection'),
-            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run.', 'vpndetection'),
+            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. On the free plan, judged by the network an address belongs to.', 'vpndetection'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'vpndetection'),
+            'country' => __('Visitors from the countries you list, wherever they connect from.', 'vpndetection'),
             default => '',
         };
     }
 
     /**
      * The block condition for a set of signals, in the SDK's condition language: a list, so any one
-     * signal is enough.
+     * signal is enough. Given the answer, it asks what that answer can tell: a free plan carries no
+     * `is_hosting`, so hosting is read off the type of the network the address belongs to.
      *
      * @param list<string> $signals
+     * @param list<string> $countries
      * @return list<array<string, mixed>>
      */
-    public static function condition(array $signals, int $minHits): array
+    public static function condition(array $signals, int $minHits, ?Result $answer = null, array $countries = []): array
     {
         $condition = [];
         foreach ($signals as $signal) {
-            $condition[] = self::one($signal, $minHits);
+            $one = self::one($signal, $minHits, $answer, $countries);
+            if ($one !== null) {
+                $condition[] = $one;
+            }
         }
         return $condition;
     }
 
-    /** @return array<string, mixed> */
-    public static function one(string $signal, int $minHits): array
+    /**
+     * One signal's term, or null for one that constrains nothing: countries with none listed.
+     *
+     * @param list<string> $countries
+     * @return array<string, mixed>|null
+     */
+    public static function one(string $signal, int $minHits, ?Result $answer = null, array $countries = []): ?array
     {
+        if ($signal === 'country') {
+            return $countries === [] ? null : ['location' => ['country' => $countries]];
+        }
+        if ($signal === 'hosting' && $answer !== null && $answer->isHosting === null && $answer->asn !== null) {
+            return ['asn' => ['type' => 'hosting']];
+        }
         $def = self::ALL[$signal];
         $one = [$def['member'] => true];
         if ($minHits > 1 && in_array($signal, self::COUNTED, true)) {

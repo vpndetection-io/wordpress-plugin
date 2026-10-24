@@ -53,7 +53,7 @@ final class Pages
         }
         $verdict = $this->judge(Request::path());
         if ($verdict !== null && $verdict->enforced()) {
-            $this->refuse();
+            $this->refuse($verdict);
         }
     }
 
@@ -95,7 +95,7 @@ final class Pages
             return ['blocked' => false];
         }
         $redirect = $this->redirect();
-        return $redirect !== '' ? ['blocked' => true, 'redirect' => $redirect] : ['blocked' => true, 'message' => $this->settings->message()];
+        return $redirect !== '' ? ['blocked' => true, 'redirect' => $redirect] : ['blocked' => true, 'message' => $this->settings->message($verdict)];
     }
 
     /** Never let a page cache keep this response. */
@@ -119,7 +119,7 @@ final class Pages
         return $this->detector->judge('pages', ['path' => mb_substr($path, 0, 191)]);
     }
 
-    private function refuse(): never
+    private function refuse(Verdict $verdict): never
     {
         self::uncached();
         $redirect = $this->redirect();
@@ -131,7 +131,7 @@ final class Pages
             exit;
         }
         wp_die(
-            esc_html($this->settings->message()),
+            esc_html($this->settings->message($verdict)),
             esc_html__('Access denied', 'vpndetection'),
             ['response' => 403],
         );

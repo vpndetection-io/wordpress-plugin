@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
-Block or hold sign-ins, sign-ups, comments, forms, WooCommerce orders and pages from VPNs, proxies, Tor and hosting networks.
+Block or hold sign-ins, sign-ups, comments, forms, WooCommerce orders and pages from VPNs, proxies, Tor, hosting networks and countries.
 
 == Description ==
 
@@ -26,9 +26,9 @@ Start each area on Log only and the Activity tab lists who it would have caught 
 
 = What it can tell apart =
 
-VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, and privacy relays such as iCloud Private Relay. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone.
+VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, and the countries you list. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone.
 
-Without an account the plugin checks for VPNs only. A free account adds Tor and relays, with 50,000 checks a month of your own, and paid plans answer every signal. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
+Without an account the plugin checks for VPNs only. A free account adds Tor, relays, countries and hosting, judged on the free plan by the network an address belongs to, with 50,000 checks a month of your own, and paid plans answer every signal. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
 
 = Built to stay out of the way =
 
@@ -59,6 +59,10 @@ Not through the sign-in area while "Administrators can always sign in" is ticked
 = My whole site sits behind Cloudflare or a load balancer. Does that matter? =
 
 Cloudflare and a proxy on your server's private network are recognized automatically. For anything else, set Visitor address under Advanced to the proxy in front of you, or every visitor looks like the proxy. The "Your connection" box on the settings page shows which address the plugin sees.
+
+= Can it block countries too? =
+
+Yes. Tick Countries under What to block and list them by their two-letter codes, such as CN, RU. It works on the free plan, reads where the visitor's address is rather than where their browser says they are, and tells a refused visitor the site isn't available in their country. VPNs and proxies are how visitors get round a country block, so it works best beside them.
 
 = How many checks will my site use? =
 

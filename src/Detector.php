@@ -130,20 +130,35 @@ final class Detector
             return null;
         }
         $minHits = (int) $this->settings->get('min_hits');
-        $condition = apply_filters('vpndetection_condition', Signals::condition($signals, $minHits), $area, $signals);
+        $countries = $this->settings->countries();
+        $condition = Signals::condition($signals, $minHits, $result, $countries);
+        /**
+         * Filters the rule an area blocks on, in the PHP SDK's condition format.
+         *
+         * @param list<array<string, mixed>> $condition
+         * @param string $area
+         * @param list<string> $signals
+         */
+        $condition = apply_filters('vpndetection_condition', $condition, $area, $signals);
+        if (!is_array($condition) || $condition === []) {
+            return null;
+        }
         try {
-            Condition::validate(is_array($condition) ? $condition : null);
+            Condition::validate($condition);
         } catch (InvalidArgumentException) {
             return null;
         }
-        $this->notePlanGaps($signals, $minHits, $result);
-        if (!is_array($condition) || !Condition::matches($condition, $result)) {
+        $this->notePlanGaps($signals, $minHits, $result, $countries);
+        if (!Condition::matches($condition, $result)) {
             return null;
         }
-        $matched = array_values(array_filter(
-            $signals,
-            static fn (string $s): bool => Condition::matches([Signals::one($s, $minHits)], $result),
-        ));
+        $matched = [];
+        foreach ($signals as $signal) {
+            $one = Signals::one($signal, $minHits, $result, $countries);
+            if ($one !== null && Condition::matches([$one], $result)) {
+                $matched[] = $signal;
+            }
+        }
         return $this->flag(new Verdict($area, $action, $matched === [] ? ['custom'] : $matched, $visit, $context));
     }
 
@@ -204,12 +219,14 @@ final class Detector
      * so the settings can say why a signal blocks nobody.
      *
      * @param list<string> $signals
+     * @param list<string> $countries
      */
-    private function notePlanGaps(array $signals, int $minHits, Result $result): void
+    private function notePlanGaps(array $signals, int $minHits, Result $result, array $countries): void
     {
         $gaps = [];
         foreach ($signals as $signal) {
-            if (Condition::missingMembers([Signals::one($signal, $minHits)], $result) !== []) {
+            $one = Signals::one($signal, $minHits, $result, $countries);
+            if ($one !== null && Condition::missingMembers([$one], $result) !== []) {
                 $gaps[] = $signal;
             }
         }

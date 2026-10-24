@@ -172,15 +172,24 @@ check "  ... and records the attempt" "$(wp db query "SELECT area, action, signa
 
 echo "==> plans"
 wp option update vpndetection_api_key free-key > /dev/null
-settings "{\"signals\":[\"tor\",\"hosting\"],\"areas\":$(areas login block)}"
+settings "{\"signals\":[\"tor\"],\"areas\":$(areas login block)}"
 out="$(visit "$TOR" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
 check "a free key blocks Tor" "$out" "$MESSAGE"
+settings "{\"signals\":[\"hosting\"],\"areas\":$(areas login block)}"
 out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check_not "a free key cannot block hosting" "$out" "$MESSAGE"
-check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["hosting"\]'
+check "a free key blocks hosting, by its network's type" "$out" "$MESSAGE"
+settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
+out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check_not "a free key cannot block residential proxies" "$out" "$MESSAGE"
+check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["resproxy"\]'
+settings "{\"signals\":[\"country\"],\"countries\":\"no, SE\",\"areas\":$(areas login block)}"
+out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check "a free key blocks a listed country" "$out" "not available in your country"
+check_not "  ... and lets the rest through" "$(visit "$CLEAN" http://wp/wp-login.php -d 'log=x&pwd=y')" "your country"
 wp option update vpndetection_api_key max-key > /dev/null
-out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check "a paid key blocks hosting" "$out" "$MESSAGE"
+settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
+out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check "a paid key blocks residential proxies" "$out" "$MESSAGE"
 
 echo "==> new accounts and password resets"
 settings "{\"signals\":[\"vpn\"],\"areas\":$(areas register block)}"
@@ -337,6 +346,8 @@ check "rows count repeats rather than growing" "$(wp db query "SELECT MAX(hits) 
 echo "==> the admin screens, in a browser"
 if command -v node > /dev/null && node -e "require(process.env.PLAYWRIGHT_MODULE || 'playwright')" > /dev/null 2>&1 ; then
     wp option delete vpndetection_api_key > /dev/null
+    # The screenshots are the listing's: nothing the scenarios above left behind belongs on them.
+    wp option delete vpndetection_diagnostics > /dev/null
     settings '{"signals":["vpn","tor","hosting"]}'
     address="$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${run}-wp")"
     mkdir -p dist/screenshots

@@ -4,7 +4,8 @@
          bootstrap="tests/bootstrap.php"
          colors="true"
          failOnWarning="true"
-         failOnRisky="true">
+         failOnRisky="true"
+         cacheResult="false">
     <testsuites>
         <testsuite name="unit">
             <directory>tests/unit</directory>

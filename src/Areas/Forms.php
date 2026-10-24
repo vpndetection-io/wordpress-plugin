@@ -73,7 +73,7 @@ final class Forms
         $title = (string) ($form['settings']['form_title'] ?? '');
         $verdict = $this->detector->judge('forms', ['form' => $title]);
         if ($verdict !== null && $verdict->enforced()) {
-            $errors[$form['id']]['header'] = esc_html($this->settings->message());
+            $errors[$form['id']]['header'] = esc_html($this->settings->message($verdict));
         }
         return $errors;
     }

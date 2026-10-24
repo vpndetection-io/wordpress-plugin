@@ -17,7 +17,7 @@ Open Settings > VPNDetection and click Connect with VPNDetection. A tab opens on
 define('VPNDETECTION_API_KEY', 'your-api-key');
 ```
 
-Without a key the plugin checks for VPNs only, and shares 1,000 checks a day with everything else on your server's address. A free key adds Tor and privacy relays, with 50,000 checks a month of your own, and every paid plan answers every signal.
+Without a key the plugin checks for VPNs only, and shares 1,000 checks a day with everything else on your server's address. A free key adds Tor, privacy relays, countries and hosting, judged on the free plan by the network an address belongs to, with 50,000 checks a month of your own. Every paid plan answers every signal.
 
 Nothing is checked until you turn an area on.
 
@@ -37,7 +37,7 @@ Start an area on Log only: the Activity tab then lists who it would have caught,
 
 ## What to block
 
-VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, and privacy relays such as iCloud Private Relay. Every area blocks on the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. The settings mark each signal your plan doesn't answer, since an absent answer can never match.
+VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, and the countries you list by their two-letter codes. Every area blocks on the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. The settings mark each signal your plan doesn't answer, since an absent answer can never match. A visitor refused for their country alone is told the site isn't available there, rather than to turn off a VPN.
 
 Residential, mobile and datacenter proxies can also be held to a number of sightings: at 3, an address counts only once it has been seen in a proxy pool three times, which spares a home connection that was rented out once.
 

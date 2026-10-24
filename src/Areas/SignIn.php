@@ -43,6 +43,6 @@ final class SignIn
         if ($verdict === null || !$verdict->enforced()) {
             return $user;
         }
-        return new WP_Error('vpndetection_blocked', esc_html($this->settings->message()));
+        return new WP_Error('vpndetection_blocked', esc_html($this->settings->message($verdict)));
     }
 }

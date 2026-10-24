@@ -50,7 +50,7 @@ final class Checkout
     {
         $verdict = $this->detector->judge('checkout');
         if ($errors instanceof WP_Error && $verdict !== null && $verdict->enforced()) {
-            $errors->add('vpndetection_blocked', esc_html($this->settings->message()));
+            $errors->add('vpndetection_blocked', esc_html($this->settings->message($verdict)));
         }
     }
 
@@ -63,7 +63,7 @@ final class Checkout
             return;
         }
         $class = 'Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException';
-        throw new $class('vpndetection_blocked', esc_html($this->settings->message()), 403);
+        throw new $class('vpndetection_blocked', esc_html($this->settings->message($verdict)), 403);
     }
 
     public function mark(mixed $order): void

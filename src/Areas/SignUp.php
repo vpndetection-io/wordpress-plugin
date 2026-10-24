@@ -6,6 +6,7 @@ namespace VPNDetection\WordPress\Areas;
 
 use VPNDetection\WordPress\Detector;
 use VPNDetection\WordPress\Settings;
+use VPNDetection\WordPress\Verdict;
 use WP_Error;
 
 defined('ABSPATH') || exit;
@@ -26,8 +27,9 @@ final class SignUp
 
     public function check(mixed $errors, mixed $login = ''): mixed
     {
-        if ($errors instanceof WP_Error && $this->refused(is_string($login) ? $login : '')) {
-            $errors->add('vpndetection_blocked', esc_html($this->settings->message()));
+        $verdict = $errors instanceof WP_Error ? $this->refused(is_string($login) ? $login : '') : null;
+        if ($verdict !== null) {
+            $errors->add('vpndetection_blocked', esc_html($this->settings->message($verdict)));
         }
         return $errors;
     }
@@ -42,15 +44,17 @@ final class SignUp
         if (is_admin() || !is_array($result) || !($result['errors'] ?? null) instanceof WP_Error) {
             return $result;
         }
-        if ($this->refused((string) ($result['user_name'] ?? ''))) {
-            $result['errors']->add('user_name', esc_html($this->settings->message()));
+        $verdict = $this->refused((string) ($result['user_name'] ?? ''));
+        if ($verdict !== null) {
+            $result['errors']->add('user_name', esc_html($this->settings->message($verdict)));
         }
         return $result;
     }
 
-    private function refused(string $login): bool
+    /** The verdict that refuses this sign-up, or null when it goes ahead. */
+    private function refused(string $login): ?Verdict
     {
         $verdict = $this->detector->judge('register', ['user' => sanitize_user($login)]);
-        return $verdict !== null && $verdict->enforced();
+        return $verdict !== null && $verdict->enforced() ? $verdict : null;
     }
 }

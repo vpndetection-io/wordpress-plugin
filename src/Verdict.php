@@ -56,6 +56,11 @@ final class Verdict
         $provider = $this->provider();
         foreach ($this->signals as $i => $signal) {
             $label = Signals::label($signal);
+            if ($signal === 'country') {
+                $country = $this->visit->result?->location?->country ?? '';
+                $parts[] = $country === '' ? $label : sprintf('%s (%s)', $label, $country);
+                continue;
+            }
             $parts[] = $i === 0 && $provider !== '' ? sprintf('%s (%s)', $label, $provider) : $label;
         }
         return implode(', ', $parts);

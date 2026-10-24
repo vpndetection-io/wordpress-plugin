@@ -29,6 +29,13 @@
     margin-left: 1.6rem;
 }
 
+.vpnd .vpnd-signal .vpnd-countries {
+    display: block;
+    width: calc(100% - 1.6rem);
+    max-width: 14rem;
+    margin: 0.25rem 0 0 1.6rem;
+}
+
 .vpnd .vpnd-badge {
     display: inline-block;
     margin-left: 0.25rem;

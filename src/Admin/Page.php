@@ -373,11 +373,14 @@ final class Page
                 implode(', ', array_map([Signals::class, 'label'], $gaps)),
             )));
         }
-        $this->signalBoxes(Settings::OPTION . '[signals][]', $settings->get('signals'), $tier, 'vpnd-signals');
+        $this->signalBoxes(Settings::OPTION . '[signals][]', $settings->get('signals'), $tier, 'vpnd-signals', $settings);
     }
 
-    /** @param list<string> $checked */
-    private function signalBoxes(string $name, array $checked, ?string $tier, string $class): void
+    /**
+     * @param list<string> $checked
+     * @param Settings|null $countries The settings to read the country list from, where it is edited.
+     */
+    private function signalBoxes(string $name, array $checked, ?string $tier, string $class, ?Settings $countries = null): void
     {
         printf('<fieldset class="%s">', esc_attr($class));
         foreach (Signals::keys() as $signal) {
@@ -387,14 +390,25 @@ final class Page
                     ? __('Needs a free account', 'vpndetection')
                     : __('Needs a paid plan', 'vpndetection');
             }
+            $list = '';
+            if ($signal === 'country' && $countries !== null) {
+                $list = sprintf(
+                    '<input type="text" name="%s[countries]" value="%s" class="regular-text code vpnd-countries" placeholder="%s" aria-label="%s">',
+                    esc_attr(Settings::OPTION),
+                    esc_attr($countries->get('countries')),
+                    esc_attr__('CN, RU', 'vpndetection'),
+                    esc_attr__('Two-letter country codes, separated by commas', 'vpndetection'),
+                );
+            }
             printf(
-                '<label class="vpnd-signal"><input type="checkbox" name="%s" value="%s"%s> <strong>%s</strong>%s<span class="description">%s</span></label>',
+                '<label class="vpnd-signal"><input type="checkbox" name="%s" value="%s"%s> <strong>%s</strong>%s<span class="description">%s</span>%s</label>',
                 esc_attr($name),
                 esc_attr($signal),
                 checked(in_array($signal, $checked, true), true, false),
                 esc_html(Signals::label($signal)),
                 $badge === '' ? '' : ' <span class="vpnd-badge">' . esc_html($badge) . '</span>',
                 esc_html(Signals::hint($signal)),
+                $list, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built above from escaped parts.
             );
         }
         echo '</fieldset>';

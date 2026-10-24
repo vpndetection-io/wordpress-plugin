@@ -51,7 +51,7 @@ final class Comments
         return match ($verdict->action) {
             'hold' => 0,
             'spam' => 'spam',
-            default => new WP_Error('vpndetection_blocked', esc_html($this->settings->message()), 403),
+            default => new WP_Error('vpndetection_blocked', esc_html($this->settings->message($verdict)), 403),
         };
     }
 }

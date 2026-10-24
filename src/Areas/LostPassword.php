@@ -31,7 +31,7 @@ final class LostPassword
         $login = $user instanceof WP_User ? $user->user_login : '';
         $verdict = $this->detector->judge('lostpassword', ['user' => $login]);
         if ($verdict !== null && $verdict->enforced()) {
-            $errors->add('vpndetection_blocked', esc_html($this->settings->message()));
+            $errors->add('vpndetection_blocked', esc_html($this->settings->message($verdict)));
         }
     }
 }
