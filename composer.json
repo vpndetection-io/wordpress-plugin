@@ -1,0 +1,29 @@
+{
+    "name": "vpndetection/wordpress-plugin",
+    "description": "The official VPNDetection plugin for WordPress.",
+    "type": "wordpress-plugin",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "vpndetection/vpndetection": "*"
+    },
+    "replace": {
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php82": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5 || ^12.0 || ^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "VPNDetection\\WordPress\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.2.99"
+        },
+        "platform-check": false
+    }
+}

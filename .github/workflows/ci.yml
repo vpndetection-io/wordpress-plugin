@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every PHP the plugin declares, floor first.
+        php: ['8.2', '8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v7
+      - run: ./scripts/test.sh
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { php: '8.2', wp: '7.1.3' }
+          - { php: '8.5', wp: '7.1.3' }
+          # The oldest WordPress the plugin declares.
+          - { php: '8.2', wp: '6.4.3' }
+    steps:
+      - uses: actions/checkout@v7
+      # A real WordPress in Docker, and wordpress.org's Plugin Check.
+      - run: ./scripts/e2e.sh --php ${{ matrix.php }} --wp ${{ matrix.wp }}

@@ -1,0 +1,36 @@
+name: Release
+
+# A v<version> tag builds the zip WordPress installs and publishes it, with that version's
+# CHANGELOG.md section, as the tag's GitHub Release.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: The tag names the plugin's version
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          grep -q "^ \* Version: ${v}$" vpndetection.php ||
+            { echo "${GITHUB_REF_NAME} is not vpndetection.php's Version"; exit 1; }
+      - run: ./scripts/build.sh
+      - name: Publish the CHANGELOG section and the zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          awk -v v="$v" '/^## /{ if (found) exit; found = ($2 == v); next } found' CHANGELOG.md > notes.md
+          [ -s notes.md ] || { echo "CHANGELOG.md has no section for ${v}"; exit 1; }
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1 ; then
+            gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+            gh release upload "$GITHUB_REF_NAME" "dist/vpndetection-${v}.zip" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag \
+              "dist/vpndetection-${v}.zip"
+          fi
