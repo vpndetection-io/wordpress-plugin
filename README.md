@@ -5,7 +5,7 @@
 
 The official [VPNDetection](https://vpndetection.io) plugin for [WordPress](https://wordpress.org).
 
-It checks who signs in, signs up, resets a password, comments, sends a contact form, places a WooCommerce order or opens a page you protect, and blocks, holds or flags the ones who come through a VPN, a proxy, Tor or a hosting network.
+It blocks, holds or flags visitors who come through VPNs, proxies, Tor and hosting networks, where you choose: sign-in, sign-ups, password resets, comments, contact forms, WooCommerce checkout and pages.
 
 ## Getting Started
 
