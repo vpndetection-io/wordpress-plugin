@@ -133,12 +133,13 @@ done
 # The image's Apache rewrites REMOTE_ADDR from X-Forwarded-For itself (mod_remoteip, trusting private
 # ranges), which would leave the plugin's own reading of the header untested.
 docker exec "${run}-wp" sh -c 'a2disconf -q remoteip && apache2ctl -k graceful' > /dev/null 2>&1
+# Before the install: it loads a page to test pretty permalinks, that page spawns WP-Cron, and cron
+# would update an older WordPress to the newest in the middle of the run.
+wp config set AUTOMATIC_UPDATER_DISABLED true --raw --type=constant > /dev/null
+wp config set DISABLE_WP_CRON true --raw --type=constant > /dev/null
 wp core install --url=http://wp --title=E2E --admin_user=admin --admin_password=correct-horse \
     --admin_email=admin@example.com --skip-email > /dev/null
 wp config set VPNDETECTION_BASE_URL http://stub --type=constant > /dev/null
-# An older WordPress would otherwise update itself in the middle of the run.
-wp config set AUTOMATIC_UPDATER_DISABLED true --raw --type=constant > /dev/null
-wp config set DISABLE_WP_CRON true --raw --type=constant > /dev/null
 wp rewrite structure '/%postname%/' > /dev/null
 wp option update users_can_register 1 > /dev/null
 wp plugin activate vpndetection > /dev/null
