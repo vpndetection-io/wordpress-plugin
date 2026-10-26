@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.1 - 2026-10-26
+
+### Fixes
+
+- Bundle vpndetection 4.11.1: re-pinned to the 2026.10.25 spec ([`de78bbe`](https://github.com/vpndetection-io/wordpress-plugin/commit/de78bbe99113a3f4c1697caf38dab901cdffff41))
+
 ## 1.0.0 - 2026-10-25
 
 ### Features

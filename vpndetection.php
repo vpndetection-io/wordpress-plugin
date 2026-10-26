@@ -3,7 +3,7 @@
  * Plugin Name: VPNDetection
  * Plugin URI: https://docs.vpndetection.io/integrations/wordpress
  * Description: Block, hold or flag sign-ins, sign-ups, comments, contact forms, WooCommerce orders and pages from VPNs, proxies, Tor, hosting networks and chosen countries.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires at least: 6.4
  * Requires PHP: 8.2
  * Author: VPNDetection
@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 defined('ABSPATH') || exit;
 
-const VPNDETECTION_VERSION = '1.0.0';
+const VPNDETECTION_VERSION = '1.0.1';
 const VPNDETECTION_FILE = __FILE__;
 define('VPNDETECTION_DIR', plugin_dir_path(__FILE__));
 
