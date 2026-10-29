@@ -6,7 +6,7 @@
 # reading the visitor's address, failing open and closed, and the answer cache. Then the plugin
 # directory's own Plugin Check over it, and an uninstall.
 #
-#   ./scripts/e2e.sh [--php 8.2] [--wp 7.1.3] [--woocommerce <version>] [--cf7 <version>] [--keep]
+#   ./scripts/e2e.sh [--php 8.2] [--wp 7.1.4] [--woocommerce <version>] [--cf7 <version>] [--keep]
 #
 # The plugins it tests beside are wordpress.org's current releases, unless a version is named: the
 # oldest WordPress the plugin supports needs ones as old as itself.
@@ -20,7 +20,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 php="8.2"
-wpv="7.1.3"
+wpv="7.1.4"
 woocommerce=()
 cf7=()
 keep=n
@@ -31,7 +31,7 @@ while [ $# -gt 0 ] ; do
         --woocommerce) woocommerce=(--version="$2"); shift 2 ;;
         --cf7) cf7=(--version="$2"); shift 2 ;;
         --keep) keep=y; shift ;;
-        *) echo "usage: e2e.sh [--php 8.2] [--wp 7.1.3] [--woocommerce <version>] [--cf7 <version>] [--keep]" >&2; exit 1 ;;
+        *) echo "usage: e2e.sh [--php 8.2] [--wp 7.1.4] [--woocommerce <version>] [--cf7 <version>] [--keep]" >&2; exit 1 ;;
     esac
 done
 
