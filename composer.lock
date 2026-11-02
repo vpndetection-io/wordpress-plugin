@@ -619,16 +619,16 @@
         },
         {
             "name": "vpndetection/vpndetection",
-            "version": "v4.11.2",
+            "version": "v4.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vpndetection-io/sdk-php.git",
-                "reference": "98048a5c9681d724e11479736dd7a569f52b8a48"
+                "reference": "1686cf5f128f0ca06e7c11edd86c893b81855ae1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vpndetection-io/sdk-php/zipball/98048a5c9681d724e11479736dd7a569f52b8a48",
-                "reference": "98048a5c9681d724e11479736dd7a569f52b8a48",
+                "url": "https://api.github.com/repos/vpndetection-io/sdk-php/zipball/1686cf5f128f0ca06e7c11edd86c893b81855ae1",
+                "reference": "1686cf5f128f0ca06e7c11edd86c893b81855ae1",
                 "shasum": ""
             },
             "require": {
@@ -681,7 +681,7 @@
                 "issues": "https://github.com/vpndetection-io/sdk-php/issues",
                 "source": "https://github.com/vpndetection-io/sdk-php"
             },
-            "time": "2026-10-30T06:51:49+00:00"
+            "time": "2026-11-02T07:01:36+00:00"
         }
     ],
     "packages-dev": [
