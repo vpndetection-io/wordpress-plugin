@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.3 - 2026-11-02
+
+### Fixes
+
+- Bundle vpndetection 4.11.3: a bad per-call retry count is refused ([`a72068d`](https://github.com/vpndetection-io/wordpress-plugin/commit/a72068d239a8516af72dfd6900d411cbbec68f55))
+
 ## 1.0.2 - 2026-10-30
 
 ### Fixes
