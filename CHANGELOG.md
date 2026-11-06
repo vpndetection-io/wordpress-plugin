@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.4 - 2026-11-06
+
+### Fixes
+
+- Never refuse Bingbot from 52.130.224.112/28 ([`3897a50`](https://github.com/vpndetection-io/wordpress-plugin/commit/3897a50438ee66e3525a6cf2311ca5bc1679bcc0))
+
 ## 1.0.3 - 2026-11-02
 
 ### Fixes
