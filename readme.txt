@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -83,6 +83,9 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.0.5 =
+* The bundled VPNDetection PHP library is now 4.12.0, which lets a database download name a build. The plugin downloads nothing, so nothing about how it works changes.
 
 = 1.0.4 =
 * Bing's crawler is never refused from its newest published address block, 52.130.224.112/28.
