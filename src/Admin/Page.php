@@ -236,10 +236,10 @@ final class Page
             printf(
                 '<a class="button" href="%s" target="_blank" rel="noopener">%s</a>',
                 esc_url(self::console('/billing/plan', 'plan')),
-                $account->plan->tier === 'free' ? esc_html__('Upgrade for every signal', 'vpndetection') : esc_html__('Manage plan', 'vpndetection'),
+                $account->plan->tier === 'free' ? esc_html__('Upgrade for more checks', 'vpndetection') : esc_html__('Manage plan', 'vpndetection'),
             );
             if (!$settings->keyInConfig()) {
-                $this->postButton('vpndetection_disconnect', __('Disconnect', 'vpndetection'), 'button-link-delete', __('Disconnect this site? It goes back to checking for VPNs only, with the shared allowance.', 'vpndetection'));
+                $this->postButton('vpndetection_disconnect', __('Disconnect', 'vpndetection'), 'button-link-delete', __('Disconnect this site? It goes back to checking without an account, which catches no proxies.', 'vpndetection'));
             }
             echo '</div>';
             if ($settings->keyInConfig()) {
@@ -262,8 +262,8 @@ final class Page
             echo '<p>' . esc_html__('This site uses the API key set as VPNDETECTION_API_KEY in wp-config.php.', 'vpndetection') . '</p></div>';
             return;
         }
-        echo '<p>' . esc_html__('Connect a free VPNDetection account to check for Tor and private relays as well as VPNs, with 50,000 checks a month of your own. Paid plans add every proxy and hosting signal.', 'vpndetection') . '</p>';
-        echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs only, and shares 1,000 checks a day with everything else on this server\'s address.', 'vpndetection') . '</p>';
+        echo '<p>' . esc_html__('Connect a free VPNDetection account to check for public, residential, mobile and datacenter proxies too, and for hosting address by address, with 50,000 checks a month of your own. Paid plans add how often each proxy was seen.', 'vpndetection') . '</p>';
+        echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to.', 'vpndetection') . '</p>';
         printf(
             '<p><button type="button" class="button button-primary" id="vpnd-connect">%s</button> <span id="vpnd-connect-status" aria-live="polite"></span></p>',
             esc_html__('Connect with VPNDetection', 'vpndetection'),
@@ -386,9 +386,7 @@ final class Page
         foreach (Signals::keys() as $signal) {
             $badge = '';
             if (!Signals::served($signal, $tier)) {
-                $badge = Signals::ALL[$signal]['needs'] === Signals::NEEDS_KEY
-                    ? __('Needs a free account', 'vpndetection')
-                    : __('Needs a paid plan', 'vpndetection');
+                $badge = __('Needs a free account', 'vpndetection');
             }
             $list = '';
             if ($signal === 'country' && $countries !== null) {
@@ -579,7 +577,7 @@ final class Page
             esc_html__('Proxy sightings', 'vpndetection'),
             esc_attr($name),
             (int) $settings->get('min_hits'),
-            esc_html__('Residential, mobile and datacenter proxies count only once an address has been seen in a proxy pool this many times. 1 counts every sighting; a higher number spares home addresses a proxy used once.', 'vpndetection'),
+            esc_html__('Residential, mobile and datacenter proxies count only once an address has been seen in a proxy pool this many times. 1 counts every sighting; a higher number spares home addresses a proxy used once. Counting sightings needs a paid plan.', 'vpndetection'),
         );
         printf('<tr><th scope="row">%s</th><td><fieldset>', esc_html__('When a check fails', 'vpndetection'));
         printf(
@@ -723,7 +721,7 @@ final class Page
         // phpcs:enable
         $messages = [
             'connected' => ['success', __('Connected. The plugin now checks with your own allowance.', 'vpndetection')],
-            'disconnected' => ['success', __('Disconnected. The plugin is back to checking for VPNs only.', 'vpndetection')],
+            'disconnected' => ['success', __('Disconnected. The plugin is back to checking without an account, which catches no proxies.', 'vpndetection')],
             'nokey' => ['error', __('Paste a key first.', 'vpndetection')],
             /* translators: %s: the reason, as VPNDetection gave it. */
             'badkey' => ['error', sprintf(__('VPNDetection did not accept that key: %s', 'vpndetection'), $detail)],

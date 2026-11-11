@@ -17,7 +17,7 @@ Open Settings > VPNDetection and click Connect with VPNDetection. A tab opens on
 define('VPNDETECTION_API_KEY', 'your-api-key');
 ```
 
-Without a key the plugin checks for VPNs only, and shares 1,000 checks a day with everything else on your server's address. A free key adds Tor, privacy relays, countries and hosting, judged on the free plan by the network an address belongs to, with 50,000 checks a month of your own. Every paid plan answers every signal.
+Without a key the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to. A free key adds public, residential, mobile and datacenter proxies and judges hosting address by address, with 50,000 checks a month of your own. Every paid plan adds how often each proxy was seen.
 
 Nothing is checked until you turn an area on.
 

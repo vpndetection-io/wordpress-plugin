@@ -28,7 +28,7 @@ Start each area on Log only and the Activity tab lists who it would have caught 
 
 VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, and the countries you list. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone.
 
-Without an account the plugin checks for VPNs only. A free account adds Tor, relays, countries and hosting, judged on the free plan by the network an address belongs to, with 50,000 checks a month of your own, and paid plans answer every signal. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
+Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to. A free account adds public, residential, mobile and datacenter proxies and judges hosting address by address, with 50,000 checks a month of your own, and paid plans add how often each proxy was seen. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
 
 = Built to stay out of the way =
 
@@ -62,7 +62,7 @@ Cloudflare and a proxy on your server's private network are recognized automatic
 
 = Can it block countries too? =
 
-Yes. Tick Countries under What to block and list them by their two-letter codes, such as CN, RU. It works on the free plan, reads where the visitor's address is rather than where their browser says they are, and tells a refused visitor the site isn't available in their country. VPNs and proxies are how visitors get round a country block, so it works best beside them.
+Yes. Tick Countries under What to block and list them by their two-letter codes, such as CN, RU. It works without an account, reads where the visitor's address is rather than where their browser says they are, and tells a refused visitor the site isn't available in their country. VPNs and proxies are how visitors get round a country block, so it works best beside them.
 
 = How many checks will my site use? =
 

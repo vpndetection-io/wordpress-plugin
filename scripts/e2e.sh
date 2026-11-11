@@ -172,21 +172,27 @@ check_not "Log only refuses nobody" "$out" "$MESSAGE"
 check "  ... and records the attempt" "$(wp db query "SELECT area, action, signals, detail FROM wp_vpndetection_activity WHERE action='log'" --skip-column-names)" "login.log.vpn.someone"
 
 echo "==> plans"
-wp option update vpndetection_api_key free-key > /dev/null
 settings "{\"signals\":[\"tor\"],\"areas\":$(areas login block)}"
 out="$(visit "$TOR" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check "a free key blocks Tor" "$out" "$MESSAGE"
+check "with no key, Tor is blocked" "$out" "$MESSAGE"
 settings "{\"signals\":[\"hosting\"],\"areas\":$(areas login block)}"
 out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check "a free key blocks hosting, by its network's type" "$out" "$MESSAGE"
-settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
-out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check_not "a free key cannot block residential proxies" "$out" "$MESSAGE"
-check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["resproxy"\]'
+check "  ... and hosting, by its network's type" "$out" "$MESSAGE"
 settings "{\"signals\":[\"country\"],\"countries\":\"no, SE\",\"areas\":$(areas login block)}"
 out="$(visit "$VPN" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check "a free key blocks a listed country" "$out" "not available in your country"
-check_not "  ... and lets the rest through" "$(visit "$CLEAN" http://wp/wp-login.php -d 'log=x&pwd=y')" "your country"
+check "  ... and a listed country" "$out" "not available in your country"
+check_not "  ... letting the rest through" "$(visit "$CLEAN" http://wp/wp-login.php -d 'log=x&pwd=y')" "your country"
+settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
+out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check_not "with no key, residential proxies cannot be blocked" "$out" "$MESSAGE"
+check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["resproxy"\]'
+wp option update vpndetection_api_key free-key > /dev/null
+out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check "a free key blocks residential proxies" "$out" "$MESSAGE"
+settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block),\"min_hits\":3}"
+out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check_not "  ... but cannot count its sightings" "$out" "$MESSAGE"
+check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["resproxy"\]'
 wp option update vpndetection_api_key max-key > /dev/null
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"

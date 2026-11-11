@@ -117,13 +117,14 @@ switch ($ip) {
 if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
     reply(400, ['error' => 'not a valid IP address']);
 }
+$keyless = [
+    'ip' => $ip, 'is_vpn' => $flags['is_vpn'], 'is_relay' => $flags['is_relay'], 'is_tor' => $flags['is_tor'],
+    'relay' => $details['relay'], 'tor' => $details['tor'], 'location' => $location, 'asn' => $asn,
+];
 if ($key === '') {
-    reply(200, ['ip' => $ip, 'is_vpn' => $flags['is_vpn']]);
+    reply(200, $keyless);
 }
 if ($key === 'free-key') {
-    reply(200, [
-        'ip' => $ip, 'is_vpn' => $flags['is_vpn'], 'is_relay' => $flags['is_relay'], 'is_tor' => $flags['is_tor'],
-        'relay' => $details['relay'], 'tor' => $details['tor'], 'location' => $location, 'asn' => $asn,
-    ]);
+    reply(200, $keyless + $flags);
 }
 reply(200, ['ip' => $ip] + $flags + $details + ['location' => $location, 'asn' => $asn]);

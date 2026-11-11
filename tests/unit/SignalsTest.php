@@ -45,35 +45,46 @@ final class SignalsTest extends TestCase
         $this->assertFalse(Condition::matches(Signals::condition(['vpn'], 1), $seenTwice));
     }
 
-    public function testAKeylessAnswerLacksAPaidSignal(): void
+    public function testAKeylessAnswerLacksAKeyedSignal(): void
     {
-        $keyless = new Result(ip: '45.83.91.1', isVpn: true, isBogon: false);
-        $this->assertSame(['isHosting'], Condition::missingMembers(Signals::condition(['hosting'], 1), $keyless));
+        $keyless = new Result(ip: '5.6.7.8', isVpn: false, isBogon: false, isTor: false, isRelay: false);
+        $this->assertSame(['isResproxy'], Condition::missingMembers(Signals::condition(['resproxy'], 1), $keyless));
     }
 
     public function testWhichPlansServeWhat(): void
     {
-        $this->assertTrue(Signals::served('vpn', null));
-        $this->assertFalse(Signals::served('tor', null));
-        $this->assertTrue(Signals::served('tor', 'free'));
-        $this->assertFalse(Signals::served('hosting', null));
-        $this->assertTrue(Signals::served('hosting', 'free'));
-        $this->assertFalse(Signals::served('resproxy', 'free'));
+        foreach (['vpn', 'tor', 'relay', 'country', 'hosting'] as $signal) {
+            $this->assertTrue(Signals::served($signal, null), "{$signal} without a key");
+        }
+        foreach (['pubproxy', 'resproxy', 'mobproxy', 'dcproxy'] as $signal) {
+            $this->assertFalse(Signals::served($signal, null), "{$signal} without a key");
+            $this->assertTrue(Signals::served($signal, 'free'), "{$signal} on a free key");
+        }
         $this->assertTrue(Signals::served('resproxy', 'starter'));
     }
 
-    /** A free answer carries no is_hosting, but its network's type answers the same question. */
-    public function testHostingOnAFreeAnswerReadsTheNetworksType(): void
+    /** A free answer flags a proxy but carries no sightings, so a sighting count is a gap it reports. */
+    public function testAFreeAnswerCannotCountSightings(): void
     {
-        $free = new Result(ip: '45.83.91.1', isVpn: true, isBogon: false, isTor: false, isRelay: false,
+        $free = new Result(ip: '5.6.7.8', isVpn: false, isBogon: false, isResproxy: true);
+        $this->assertTrue(Condition::matches(Signals::condition(['resproxy'], 1, $free), $free));
+        $counted = Signals::condition(['resproxy'], 3, $free);
+        $this->assertFalse(Condition::matches($counted, $free));
+        $this->assertSame(['resproxy'], Condition::missingMembers($counted, $free));
+    }
+
+    /** An answer without a key carries no is_hosting, but its network's type answers the same question. */
+    public function testHostingWithoutAKeyReadsTheNetworksType(): void
+    {
+        $keyless = new Result(ip: '45.83.91.1', isVpn: true, isBogon: false, isTor: false, isRelay: false,
             asn: new Asn(asn: 9009, name: 'M247 Europe SRL', type: 'hosting'));
-        $condition = Signals::condition(['hosting'], 1, $free);
+        $condition = Signals::condition(['hosting'], 1, $keyless);
         $this->assertSame([['asn' => ['type' => 'hosting']]], $condition);
-        $this->assertTrue(Condition::matches($condition, $free));
-        $this->assertSame([], Condition::missingMembers($condition, $free));
-        $paid = new Result(ip: '45.83.91.1', isVpn: true, isBogon: false, isHosting: false,
+        $this->assertTrue(Condition::matches($condition, $keyless));
+        $this->assertSame([], Condition::missingMembers($condition, $keyless));
+        $keyed = new Result(ip: '45.83.91.1', isVpn: true, isBogon: false, isHosting: false,
             asn: new Asn(asn: 9009, name: 'M247 Europe SRL', type: 'hosting'));
-        $this->assertFalse(Condition::matches(Signals::condition(['hosting'], 1, $paid), $paid), 'a paid answer is taken at its word');
+        $this->assertFalse(Condition::matches(Signals::condition(['hosting'], 1, $keyed), $keyed), 'a keyed answer is taken at its word');
     }
 
     public function testCountries(): void
