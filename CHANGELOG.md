@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.6 - 2026-11-11
+
+### Features
+
+- Check Tor, relays, countries and hosting without a key, proxies with a free one ([`ec87abc`](https://github.com/vpndetection-io/wordpress-plugin/commit/ec87abcfcabed84ab37fbd256d3ba0843c652346))
+
 ## 1.0.5 - 2026-11-08
 
 ### Fixes
