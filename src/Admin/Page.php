@@ -263,7 +263,7 @@ final class Page
             return;
         }
         echo '<p>' . esc_html__('Connect a free VPNDetection account to check for public, residential, mobile and datacenter proxies too, and for hosting address by address, with 50,000 checks a month of your own. Paid plans add how often each proxy was seen.', 'vpndetection') . '</p>';
-        echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to.', 'vpndetection') . '</p>';
+        echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to. That is for non-commercial sites: a store or any other business connects a free account.', 'vpndetection') . '</p>';
         printf(
             '<p><button type="button" class="button button-primary" id="vpnd-connect">%s</button> <span id="vpnd-connect-status" aria-live="polite"></span></p>',
             esc_html__('Connect with VPNDetection', 'vpndetection'),

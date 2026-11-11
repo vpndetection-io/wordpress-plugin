@@ -28,7 +28,7 @@ Start each area on Log only and the Activity tab lists who it would have caught 
 
 VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, and the countries you list. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone.
 
-Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to. A free account adds public, residential, mobile and datacenter proxies and judges hosting address by address, with 50,000 checks a month of your own, and paid plans add how often each proxy was seen. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
+Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to, for non-commercial sites: a store or any other business connects a free account, as VPNDetection's terms ask (https://vpndetection.io/terms#no-key). A free account adds public, residential, mobile and datacenter proxies and judges hosting address by address, with 50,000 checks a month of your own, and paid plans add how often each proxy was seen. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
 
 = Built to stay out of the way =
 
