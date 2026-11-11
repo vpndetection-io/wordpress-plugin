@@ -28,7 +28,7 @@ Start each area on Log only and the Activity tab lists who it would have caught 
 
 VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, and the countries you list. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone.
 
-Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to, with no cap. A VPNDetection account tries every signal, public, residential, mobile and datacenter proxies included, on its first 100 checks each day, and paid plans check every signal on every visit, with how often each proxy was seen. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
+VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays, countries and hosting on every visit, with no cap and no account needed. Connect a free account and its first 100 checks each day try every signal, public, residential, mobile and datacenter proxies included; a paid plan checks every signal on every visit, with how often each proxy was seen. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
 
 = Built to stay out of the way =
 
@@ -85,7 +85,7 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 == Changelog ==
 
 = 1.0.7 =
-* VPNDetection has no free plan any more. Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting with no cap; a connected account tries every signal, the proxies included, on its first 100 checks each day, and a paid plan checks every signal on every visit.
+* Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting with no cap; a connected account tries every signal, the proxies included, on its first 100 checks each day, and a paid plan checks every signal on every visit.
 
 = 1.0.6 =
 * Without an account the plugin now checks for Tor, privacy relays, countries and hosting as well as VPNs, and a free account adds every proxy. The settings say which signals need an account, and that counting a proxy's sightings needs a paid plan.

@@ -58,7 +58,7 @@ final class SignalsTest extends TestCase
         }
         foreach (['pubproxy', 'resproxy', 'mobproxy', 'dcproxy'] as $signal) {
             $this->assertFalse(Signals::served($signal, null), "{$signal} without a key");
-            $this->assertFalse(Signals::served($signal, 'free'), "{$signal} on a Trial key, past its day");
+            $this->assertFalse(Signals::served($signal, 'free'), "{$signal} on a free-plan key, past its daily trial");
         }
         $this->assertTrue(Signals::served('resproxy', 'starter'));
     }

@@ -11,11 +11,11 @@ defined('ABSPATH') || exit;
 /**
  * What the plugin can block on, in the order the settings show it.
  *
- * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: on the
- * Unlimited tier, with a key or without one, a lookup carries `is_vpn`, Tor, relays, the location and
- * the network, and every paid plan every flag and the detail behind it, a proxy's sightings included.
- * A key on no paid plan is on Trial: its account's first 100 lookups each UTC day answer as a paid
- * plan's, and the rest as Unlimited's, which `trial_expired` says.
+ * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: on
+ * Unlimited, the free plan, with a key or without one, a lookup carries `is_vpn`, Tor, relays, the
+ * location and the network, and on every paid plan every flag and the detail behind it, a proxy's
+ * sightings included. A key on the free plan also gets a daily trial: its account's first 100 lookups
+ * each UTC day answer as a paid plan's, and the rest as Unlimited's, which `trial_expired` says.
  */
 final class Signals
 {
@@ -124,7 +124,7 @@ final class Signals
 
     /**
      * Whether a plan tier answers a signal on every lookup; null tier is a keyless client, and `free`
-     * a Trial key's, which answers every signal only for its account's first 100 lookups a day.
+     * the free plan's, which answers every signal only for its account's first 100 lookups a day.
      */
     public static function served(string $signal, ?string $tier): bool
     {

@@ -29,6 +29,8 @@ final class Page
     private const GROUP = 'vpndetection';
     private const ACCOUNT_CACHE = 'vpndetection_account';
     private const SET_UP = 'vpndetection_set_up';
+    /** The plan an account with no subscription is on, which VPNDetection calls Unlimited. */
+    private const FREE_PLAN = 'free';
 
     public function __construct(private readonly Plugin $plugin)
     {
@@ -217,20 +219,30 @@ final class Page
         echo '<h2>' . esc_html__('Account', 'vpndetection') . '</h2>';
         if ($account instanceof Entitlement) {
             $usage = $account->usage;
+            // The free plan, Unlimited, has no allowance to spend: its usage is its daily trial, the day's
+            // checks answered with every signal.
+            $free = $account->plan->key === self::FREE_PLAN;
             printf(
                 '<p><strong>%s</strong> %s</p>',
                 esc_html(sprintf(
-                    /* translators: %s: the plan's name, such as "Free". */
+                    /* translators: %s: the plan's name, such as "Unlimited" or "Starter". */
                     __('Connected, on the %s plan.', 'vpndetection'),
-                    ucfirst($account->plan->key),
+                    $free ? __('Unlimited', 'vpndetection') : ucfirst($account->plan->key),
                 )),
-                esc_html(sprintf(
-                    /* translators: 1: checks made; 2: checks included; 3: a date. */
-                    __('%1$s of %2$s checks used this period, which resets on %3$s.', 'vpndetection'),
-                    number_format_i18n($usage->requests),
-                    number_format_i18n($usage->quota),
-                    wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp()),
-                )),
+                esc_html($free
+                    ? sprintf(
+                        /* translators: 1: checks made today with every signal; 2: how many a day get every signal. */
+                        __('%1$s of today\'s %2$s checks with every signal used.', 'vpndetection'),
+                        number_format_i18n($usage->requests),
+                        number_format_i18n($usage->quota),
+                    )
+                    : sprintf(
+                        /* translators: 1: checks made; 2: checks included; 3: a date. */
+                        __('%1$s of %2$s checks used this period, which resets on %3$s.', 'vpndetection'),
+                        number_format_i18n($usage->requests),
+                        number_format_i18n($usage->quota),
+                        wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp()),
+                    )),
             );
             echo '<div class="vpnd-actions">';
             printf(

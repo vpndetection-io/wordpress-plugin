@@ -1,8 +1,8 @@
 <?php
 
 // A stand-in for the VPNDetection API, answering the addresses the e2e scenarios use in the shapes the
-// real API answers them, by plan: no key, a Trial key within its day (`free-key`, an account on no paid plan),
-// a Trial key past it (`trial-spent`), or any other key as a paid one.
+// real API answers them, by plan: no key, a free-plan key within its daily trial (`free-key`), one past it
+// (`trial-spent`), or any other key as a paid one.
 // Every request is appended to /tmp/stub.log, so a scenario can count lookups. Run with `php -S`.
 
 declare(strict_types=1);
@@ -57,7 +57,7 @@ if ($path === '/api/v1/entitlement') {
     reply(200, [
         'org_id' => '85bb51e4-2eb6-4a31-8e4d-02ba8b98fe61',
         'apikey' => ['id' => '0ab424cc-7619-4dad-b027-afacdc2cedb0', 'expires' => null, 'allowed_cidrs' => []],
-        'plan' => ['key' => $free ? 'trial' : 'max', 'tier' => $free ? 'free' : 'max'],
+        'plan' => ['key' => $free ? 'free' : 'max', 'tier' => $free ? 'free' : 'max'],
         'usage' => [
             'requests' => 1240,
             'quota' => $free ? 100 : 5000000,
