@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.8 - 2026-11-11
+
+### Fixes
+
+- Name the free plan Unlimited on the account card, and count its daily trial ([`91da11e`](https://github.com/vpndetection-io/wordpress-plugin/commit/91da11e7d78ab32317eab5b3ba33cc1e9da9616b))
+
 ## 1.0.7 - 2026-11-11
 
 ### Features
