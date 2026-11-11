@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.7 - 2026-11-11
+
+### Features
+
+- Gate the proxies on a paid plan, and name the Trial an account tries ([`a9b0963`](https://github.com/vpndetection-io/wordpress-plugin/commit/a9b09631458eb0d675cd98004864e682ef475cb7))
+
 ## 1.0.6 - 2026-11-11
 
 ### Features

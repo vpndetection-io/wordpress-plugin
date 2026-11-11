@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -83,6 +83,9 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.0.7 =
+* VPNDetection has no free plan any more. Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting with no cap; a connected account tries every signal, the proxies included, on its first 100 checks each day, and a paid plan checks every signal on every visit.
 
 = 1.0.6 =
 * Without an account the plugin now checks for Tor, privacy relays, countries and hosting as well as VPNs, and a free account adds every proxy. The settings say which signals need an account, and that counting a proxy's sightings needs a paid plan.
