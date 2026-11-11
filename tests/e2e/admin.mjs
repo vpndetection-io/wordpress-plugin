@@ -46,7 +46,7 @@ try {
     check('the self-check names the address', (await page.textContent('#vpnd-connection')).includes('45.83.91.1'));
     check('  ... and says it is a VPN', (await page.textContent('#vpnd-connection')).includes('VPNs'));
     check('an unconnected site offers Connect', await page.isVisible('#vpnd-connect'));
-    check('a free account is offered for the proxies', (await page.textContent('.vpnd-signals')).includes('Needs a free account'));
+    check('the proxies are a paid plan\'s', (await page.textContent('.vpnd-signals')).includes('Needs a paid plan'));
 
     const popup = context.waitForEvent('page');
     await page.click('#vpnd-connect');

@@ -11,24 +11,26 @@ defined('ABSPATH') || exit;
 /**
  * What the plugin can block on, in the order the settings show it.
  *
- * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: without a
- * key a lookup carries `is_vpn`, Tor, relays, the location and the network, a free key adds every other
- * flag, and every paid plan the detail behind each flag, a proxy's sightings included.
+ * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: on the
+ * Unlimited tier, with a key or without one, a lookup carries `is_vpn`, Tor, relays, the location and
+ * the network, and every paid plan every flag and the detail behind it, a proxy's sightings included.
+ * A key on no paid plan is on Trial: its account's first 100 lookups each UTC day answer as a paid
+ * plan's, and the rest as Unlimited's, which `trial_expired` says.
  */
 final class Signals
 {
     public const NEEDS_NOTHING = 'none';
-    public const NEEDS_KEY = 'key';
+    public const NEEDS_PAID = 'paid';
 
     /** @var array<string, array{member: string, detail: string, needs: string}> */
     public const ALL = [
         'vpn' => ['member' => 'isVpn', 'detail' => 'vpn', 'needs' => self::NEEDS_NOTHING],
         'tor' => ['member' => 'isTor', 'detail' => 'tor', 'needs' => self::NEEDS_NOTHING],
-        'pubproxy' => ['member' => 'isPubproxy', 'detail' => 'pubproxy', 'needs' => self::NEEDS_KEY],
-        'resproxy' => ['member' => 'isResproxy', 'detail' => 'resproxy', 'needs' => self::NEEDS_KEY],
-        'mobproxy' => ['member' => 'isMobproxy', 'detail' => 'mobproxy', 'needs' => self::NEEDS_KEY],
-        'dcproxy' => ['member' => 'isDcproxy', 'detail' => 'dcproxy', 'needs' => self::NEEDS_KEY],
-        // A key answers is_hosting; without one it is read by its network's type, which every answer carries.
+        'pubproxy' => ['member' => 'isPubproxy', 'detail' => 'pubproxy', 'needs' => self::NEEDS_PAID],
+        'resproxy' => ['member' => 'isResproxy', 'detail' => 'resproxy', 'needs' => self::NEEDS_PAID],
+        'mobproxy' => ['member' => 'isMobproxy', 'detail' => 'mobproxy', 'needs' => self::NEEDS_PAID],
+        'dcproxy' => ['member' => 'isDcproxy', 'detail' => 'dcproxy', 'needs' => self::NEEDS_PAID],
+        // A paid plan answers is_hosting; without one it is read by its network's type, which every answer carries.
         'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_NOTHING],
         'relay' => ['member' => 'isRelay', 'detail' => 'relay', 'needs' => self::NEEDS_NOTHING],
         'country' => ['member' => 'location', 'detail' => 'location', 'needs' => self::NEEDS_NOTHING],
@@ -70,7 +72,7 @@ final class Signals
             'resproxy' => __('Home connections rented out as proxies.', 'vpndetection'),
             'mobproxy' => __('Phone connections rented out as proxies. Carriers share these addresses with ordinary customers.', 'vpndetection'),
             'dcproxy' => __('Proxies running in datacenters.', 'vpndetection'),
-            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without an account, judged by the network an address belongs to.', 'vpndetection'),
+            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan, judged by the network an address belongs to.', 'vpndetection'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'vpndetection'),
             'country' => __('Visitors from the countries you list, wherever they connect from.', 'vpndetection'),
             default => '',
@@ -79,8 +81,8 @@ final class Signals
 
     /**
      * The block condition for a set of signals, in the SDK's condition language: a list, so any one
-     * signal is enough. Given the answer, it asks what that answer can tell: an answer without a key
-     * carries no `is_hosting`, so hosting is read off the type of the network the address belongs to.
+     * signal is enough. Given the answer, it asks what that answer can tell: an Unlimited answer carries
+     * no `is_hosting`, so hosting is read off the type of the network the address belongs to.
      *
      * @param list<string> $signals
      * @param list<string> $countries
@@ -120,9 +122,12 @@ final class Signals
         return $one;
     }
 
-    /** Whether a plan tier answers a signal; null tier is a keyless client. */
+    /**
+     * Whether a plan tier answers a signal on every lookup; null tier is a keyless client, and `free`
+     * a Trial key's, which answers every signal only for its account's first 100 lookups a day.
+     */
     public static function served(string $signal, ?string $tier): bool
     {
-        return self::ALL[$signal]['needs'] === self::NEEDS_NOTHING || $tier !== null;
+        return self::ALL[$signal]['needs'] === self::NEEDS_NOTHING || ($tier !== null && $tier !== 'free');
     }
 }

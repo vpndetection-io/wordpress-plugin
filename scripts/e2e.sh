@@ -188,10 +188,14 @@ check_not "with no key, residential proxies cannot be blocked" "$out" "$MESSAGE"
 check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["resproxy"\]'
 wp option update vpndetection_api_key free-key > /dev/null
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check "a free key blocks residential proxies" "$out" "$MESSAGE"
+check "a Trial key within its day blocks residential proxies" "$out" "$MESSAGE"
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block),\"min_hits\":3}"
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check_not "  ... but cannot count its sightings" "$out" "$MESSAGE"
+check_not "  ... and counts sightings, letting one seen fewer times through" "$out" "$MESSAGE"
+wp option update vpndetection_api_key trial-spent > /dev/null
+settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
+out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check_not "a Trial key past its day cannot block residential proxies" "$out" "$MESSAGE"
 check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["resproxy"\]'
 wp option update vpndetection_api_key max-key > /dev/null
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"

@@ -58,13 +58,13 @@ final class SignalsTest extends TestCase
         }
         foreach (['pubproxy', 'resproxy', 'mobproxy', 'dcproxy'] as $signal) {
             $this->assertFalse(Signals::served($signal, null), "{$signal} without a key");
-            $this->assertTrue(Signals::served($signal, 'free'), "{$signal} on a free key");
+            $this->assertFalse(Signals::served($signal, 'free'), "{$signal} on a Trial key, past its day");
         }
         $this->assertTrue(Signals::served('resproxy', 'starter'));
     }
 
-    /** A free answer flags a proxy but carries no sightings, so a sighting count is a gap it reports. */
-    public function testAFreeAnswerCannotCountSightings(): void
+    /** An answer that flags a proxy but carries no sightings reports a sighting count as a gap. */
+    public function testAnAnswerWithNoSightingsCannotCountThem(): void
     {
         $free = new Result(ip: '5.6.7.8', isVpn: false, isBogon: false, isResproxy: true);
         $this->assertTrue(Condition::matches(Signals::condition(['resproxy'], 1, $free), $free));

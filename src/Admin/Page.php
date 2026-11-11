@@ -236,7 +236,7 @@ final class Page
             printf(
                 '<a class="button" href="%s" target="_blank" rel="noopener">%s</a>',
                 esc_url(self::console('/billing/plan', 'plan')),
-                $account->plan->tier === 'free' ? esc_html__('Upgrade for more checks', 'vpndetection') : esc_html__('Manage plan', 'vpndetection'),
+                $account->plan->tier === 'free' ? esc_html__('Upgrade for every signal', 'vpndetection') : esc_html__('Manage plan', 'vpndetection'),
             );
             if (!$settings->keyInConfig()) {
                 $this->postButton('vpndetection_disconnect', __('Disconnect', 'vpndetection'), 'button-link-delete', __('Disconnect this site? It goes back to checking without an account, which catches no proxies.', 'vpndetection'));
@@ -262,8 +262,8 @@ final class Page
             echo '<p>' . esc_html__('This site uses the API key set as VPNDETECTION_API_KEY in wp-config.php.', 'vpndetection') . '</p></div>';
             return;
         }
-        echo '<p>' . esc_html__('Connect a free VPNDetection account to check for public, residential, mobile and datacenter proxies too, and for hosting address by address, with 50,000 checks a month of your own. Paid plans add how often each proxy was seen.', 'vpndetection') . '</p>';
-        echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to. That is for non-commercial sites: a store or any other business connects a free account.', 'vpndetection') . '</p>';
+        echo '<p>' . esc_html__('Connect a VPNDetection account to try every signal, the proxies included: its first 100 checks each day answer in full. Paid plans check every signal on every visit.', 'vpndetection') . '</p>';
+        echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to, with no cap.', 'vpndetection') . '</p>';
         printf(
             '<p><button type="button" class="button button-primary" id="vpnd-connect">%s</button> <span id="vpnd-connect-status" aria-live="polite"></span></p>',
             esc_html__('Connect with VPNDetection', 'vpndetection'),
@@ -386,7 +386,7 @@ final class Page
         foreach (Signals::keys() as $signal) {
             $badge = '';
             if (!Signals::served($signal, $tier)) {
-                $badge = __('Needs a free account', 'vpndetection');
+                $badge = __('Needs a paid plan', 'vpndetection');
             }
             $list = '';
             if ($signal === 'country' && $countries !== null) {
