@@ -12,7 +12,7 @@
  * License URI: https://opensource.org/licenses/MIT
  * Text Domain: vpndetection
  * WC requires at least: 9.0
- * WC tested up to: 11.2
+ * WC tested up to: 11.3
  */
 
 declare(strict_types=1);
