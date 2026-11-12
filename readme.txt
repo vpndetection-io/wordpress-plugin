@@ -12,7 +12,9 @@ Block or hold sign-ins, sign-ups, comments, forms, WooCommerce orders and pages 
 
 == Description ==
 
-VPNDetection tells you when a visitor connects through a VPN, a proxy, Tor or a hosting network, and lets you decide what happens next, area by area:
+🔎 Is that sign-up, comment or order coming through a VPN? VPNDetection tells you when a visitor connects through a VPN, a proxy, Tor or a hosting network, and lets you decide what happens next, area by area.
+
+= 🚪 Where it checks =
 
 * Sign-in: the login page, front-end login forms such as WooCommerce's, and XML-RPC. Administrators can always sign in, so you can't lock yourself out.
 * New accounts: WordPress's registration page, a network's sign-up and WooCommerce's My Account.
@@ -22,15 +24,23 @@ VPNDetection tells you when a visitor connects through a VPN, a proxy, Tor or a 
 * WooCommerce checkout, classic and block: refuse the order, or take it and hold it for review, with a note on the order saying what the connection was.
 * Pages: the whole site, or the post types and paths you choose, with a message or a redirect.
 
+= 👀 Watch before it blocks =
+
 Start each area on Log only and the Activity tab lists who it would have caught before it blocks anyone. One click there puts an address on the allowlist, which also takes blocks and whole networks by their AS number.
 
-= What it can tell apart =
+= 🎯 What it can tell apart =
 
 VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, and the countries you list. Every area uses the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone.
 
-VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays, countries and hosting on every visit, with no cap and no account needed. Connect a free account and its first 100 checks each day try every signal, public, residential, mobile and datacenter proxies included; a paid plan checks every signal on every visit, with how often each proxy was seen. Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
+= 🎁 Free to start =
 
-= Built to stay out of the way =
+* No account: VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays, countries and hosting on every visit, with no cap.
+* Free account: its first 100 checks each day try every signal, public, residential, mobile and datacenter proxies included.
+* Paid plan: every signal on every visit, with how often each proxy was seen.
+
+Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
+
+= 🚀 Built to stay out of the way =
 
 * It checks only the areas you turn on, and asks about each address at most once every six hours.
 * If VPNDetection can't be reached within 2.5 seconds, the visitor is let through. You can choose to refuse them instead.
@@ -39,7 +49,7 @@ VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays, count
 * It finds the visitor's real address behind Cloudflare, a load balancer or another proxy, and believes a forwarding header only from the proxy that writes it.
 * It sends its requests through WordPress's own HTTP API, so your proxy settings and debugging tools see them.
 
-= For developers =
+= 🔧 For developers =
 
 `vpndetection_visitor()` returns the API's answer for the current visitor as an array. The `vpndetection_condition` filter changes the rule an area blocks on, in the PHP SDK's condition format, `vpndetection_verdict` can let a caught visitor through, and the `vpndetection_flagged` action fires for every visitor an area catches. Set `VPNDETECTION_API_KEY` in wp-config.php to keep the key out of the database. The source is at https://github.com/vpndetection-io/wordpress-plugin.
 
