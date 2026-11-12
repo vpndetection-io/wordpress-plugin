@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -83,6 +83,10 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.0.9 =
+* Tested with WooCommerce 11.3.
+* The bundled VPNDetection PHP library is now 4.14.1, which says what a lookup without a key answers and marks an answer once the free plan's daily trial is spent. Nothing about how the plugin works changes.
 
 = 1.0.8 =
 * The account card names your plan Unlimited, VPNDetection's free plan, and counts today's checks with every signal out of its 100 a day.

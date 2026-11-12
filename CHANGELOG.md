@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.9 - 2026-11-12
+
+### Fixes
+
+- Bundle vpndetection 4.14.1, which changes no call the plugin makes ([`6ea72df`](https://github.com/vpndetection-io/wordpress-plugin/commit/6ea72dff15c4f0bb24f0186a89341d054c33bbd6))
+- Declare WooCommerce 11.3 tested ([`8054a89`](https://github.com/vpndetection-io/wordpress-plugin/commit/8054a89517b5d8bd4c492f08d942807f59ccd699))
+
 ## 1.0.8 - 2026-11-11
 
 ### Fixes
