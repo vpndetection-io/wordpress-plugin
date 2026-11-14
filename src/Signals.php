@@ -82,7 +82,9 @@ final class Signals
     /**
      * The block condition for a set of signals, in the SDK's condition language: a list, so any one
      * signal is enough. Given the answer, it asks what that answer can tell: an Unlimited answer carries
-     * no `is_hosting`, so hosting is read off the type of the network the address belongs to.
+     * no `is_hosting`, so hosting is read off the type of the network the address belongs to. A relay is
+     * judged by the relay signal alone: iCloud Private Relay, WARP and the company gateways run on
+     * hosting networks, and most of their addresses answer `is_hosting` too.
      *
      * @param list<string> $signals
      * @param list<string> $countries
@@ -101,7 +103,8 @@ final class Signals
     }
 
     /**
-     * One signal's term, or null for one that constrains nothing: countries with none listed.
+     * One signal's term, or null for one that constrains nothing: countries with none listed, or
+     * hosting for an answer that is a relay.
      *
      * @param list<string> $countries
      * @return array<string, mixed>|null
@@ -110,6 +113,9 @@ final class Signals
     {
         if ($signal === 'country') {
             return $countries === [] ? null : ['location' => ['country' => $countries]];
+        }
+        if ($signal === 'hosting' && $answer !== null && $answer->isRelay === true) {
+            return null;
         }
         if ($signal === 'hosting' && $answer !== null && $answer->isHosting === null && $answer->asn !== null) {
             return ['asn' => ['type' => 'hosting']];

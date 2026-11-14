@@ -87,6 +87,20 @@ final class SignalsTest extends TestCase
         $this->assertFalse(Condition::matches(Signals::condition(['hosting'], 1, $keyed), $keyed), 'a keyed answer is taken at its word');
     }
 
+    /** WARP, iCloud Private Relay and Zscaler run on hosting networks: a relay is judged as a relay alone. */
+    public function testARelayOnAHostingNetworkIsNotHosting(): void
+    {
+        $warp = new Asn(asn: 13335, name: 'Cloudflare, Inc.', type: 'hosting');
+        $keyless = new Result(ip: '104.28.60.1', isVpn: false, isBogon: false, isTor: false, isRelay: true, asn: $warp);
+        $this->assertSame([], Signals::condition(['hosting'], 1, $keyless));
+        $this->assertNull(Signals::one('hosting', 1, $keyless));
+        $keyed = new Result(ip: '104.28.60.1', isVpn: false, isBogon: false, isHosting: true, isRelay: true, asn: $warp);
+        $this->assertSame([], Signals::condition(['hosting'], 1, $keyed));
+        $condition = Signals::condition(['vpn', 'hosting', 'relay'], 1, $keyed);
+        $this->assertSame([['isVpn' => true], ['isRelay' => true]], $condition);
+        $this->assertTrue(Condition::matches($condition, $keyed), 'the relay signal still matches it');
+    }
+
     public function testCountries(): void
     {
         $sweden = new Result(ip: '45.83.91.1', isVpn: false, isBogon: false, location: new Location(country: 'SE'));
