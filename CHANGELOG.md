@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.11 - 2026-11-14
+
+### Fixes
+
+- Keep an Activity row's provider in step with its verdict ([`545265b`](https://github.com/vpndetection-io/wordpress-plugin/commit/545265b47f50c2aef976bb3a39dbb9f83bf294b9))
+
 ## 1.0.10 - 2026-11-14
 
 ### Fixes
