@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.10 - 2026-11-14
+
+### Fixes
+
+- Judge a privacy relay by relay alone, even on a hosting network ([`6dcd218`](https://github.com/vpndetection-io/wordpress-plugin/commit/6dcd21822d428015986033eb66b5c302ac991aa0))
+
 ## 1.0.9 - 2026-11-12
 
 ### Fixes

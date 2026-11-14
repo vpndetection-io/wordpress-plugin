@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -93,6 +93,9 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.0.10 =
+* A visitor on iCloud Private Relay or another privacy relay is no longer refused as hosting where an area blocks hosting networks: a relay counts as a relay alone, and relays are let in by default.
 
 = 1.0.9 =
 * Tested with WooCommerce 11.3.
