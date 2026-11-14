@@ -86,7 +86,7 @@ final class ActivityLog
         $wpdb->query($wpdb->prepare(
             'INSERT INTO %i (first_seen, last_seen, hits, ip, area, action, signals, country, asn, asn_name, provider, detail, bucket)
             VALUES (%s, %s, 1, %s, %s, %s, %s, %s, %d, %s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE hits = hits + 1, last_seen = VALUES(last_seen), signals = VALUES(signals), detail = VALUES(detail)',
+            ON DUPLICATE KEY UPDATE hits = hits + 1, last_seen = VALUES(last_seen), signals = VALUES(signals), provider = VALUES(provider), detail = VALUES(detail)',
             self::table(),
             $now,
             $now,

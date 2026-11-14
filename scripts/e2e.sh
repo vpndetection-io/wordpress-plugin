@@ -357,6 +357,17 @@ check "a clean buyer's order goes to Processing" "$(wp wc shop_order get "${orde
 
 echo "==> the activity log"
 check "rows count repeats rather than growing" "$(wp db query "SELECT MAX(hits) FROM wp_vpndetection_activity" --skip-column-names)" "^[2-9]|^[1-9][0-9]+"
+# One visitor's signals change within the hour: the row takes the second verdict's provider, not the first's.
+wp eval '
+use VPNDetection\WordPress\{ActivityLog, Settings, Verdict, Visit};
+use VPNDetection\WordPress\Vendor\VPNDetection\{Result, VpnDetail};
+$log = new ActivityLog(new Settings());
+$vpn = new Result(ip: "198.51.100.77", isVpn: true, isBogon: false, vpn: new VpnDetail(provider: "nordvpn"));
+$log->record(new Verdict("comment", "spam", ["vpn"], new Visit("198.51.100.77", $vpn)));
+$log->record(new Verdict("comment", "spam", ["unavailable"], new Visit("198.51.100.77")));
+' > /dev/null
+check "a row whose signals change takes the new verdict's provider" "$(wp db query "SELECT CONCAT(signals, '/', provider, '/', hits) FROM wp_vpndetection_activity WHERE ip='198.51.100.77'" --skip-column-names)" "^unavailable//2$"
+wp db query "DELETE FROM wp_vpndetection_activity WHERE ip='198.51.100.77'" > /dev/null
 
 echo "==> the admin screens, in a browser"
 if command -v node > /dev/null && node -e "require(process.env.PLAYWRIGHT_MODULE || 'playwright')" > /dev/null 2>&1 ; then
