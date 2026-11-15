@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.12 - 2026-11-15
+
+### Fixes
+
+- Bundle vpndetection 4.15.0, which changes no call the plugin makes ([`fd4b87a`](https://github.com/vpndetection-io/wordpress-plugin/commit/fd4b87a3ef5634cdbab919f1537b60c83778a170))
+
 ## 1.0.11 - 2026-11-14
 
 ### Fixes
