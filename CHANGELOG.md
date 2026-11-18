@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.13 - 2026-11-18
+
+### Fixes
+
+- Bundle vpndetection 4.16.0: the plan's own name, and the overage cap ([`6106cd2`](https://github.com/vpndetection-io/wordpress-plugin/commit/6106cd2f8df406ee15c72664d78132b8d9c84009))
+
 ## 1.0.12 - 2026-11-15
 
 ### Fixes
