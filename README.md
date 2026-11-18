@@ -57,7 +57,7 @@ Search engines crawl from cloud addresses, so Google's, Bing's, Apple's and Duck
 
 ## Costs and failures
 
-Each address is looked up at most once every six hours, in the object cache if the site has one and in transients if not, and only for areas that are on. A lookup waits at most 2.5 seconds. If VPNDetection can't be reached in that time, or the site's allowance is spent, the visitor is let through and the settings say why; Advanced can switch that to refusing them.
+Each address is looked up at most once every six hours, in the object cache if the site has one and in transients if not, and only for areas that are on. A lookup waits at most 2.5 seconds. If VPNDetection can't be reached in that time, or refuses the site's key, the visitor is let through and the settings say why; Advanced can switch that to refusing them. Past your organization's overage cap, checks get the free plan's signals until the period resets or the cap is raised, and the settings say so.
 
 ## For developers
 

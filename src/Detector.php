@@ -210,6 +210,11 @@ final class Detector
         if ($failed !== null && $failed < time() - 5 * MINUTE_IN_SECONDS) {
             $this->diagnostics->clear('lookup');
         }
+        if ($lookup->result->capReached === true) {
+            $this->diagnostics->capReached();
+        } elseif (isset($this->diagnostics->recent()['cap'])) {
+            $this->diagnostics->clear('cap');
+        }
         $asn = $lookup->result->asn?->asn ?? 0;
         return new Visit($ip, $lookup->result, allowed: $allowlist->coversAsn($asn));
     }
@@ -223,6 +228,10 @@ final class Detector
      */
     private function notePlanGaps(array $signals, int $minHits, Result $result, array $countries): void
     {
+        // Past the overage cap the plan still answers them; the cap note says why they are missing.
+        if ($result->capReached === true) {
+            return;
+        }
         $gaps = [];
         foreach ($signals as $signal) {
             $one = Signals::one($signal, $minHits, $result, $countries);

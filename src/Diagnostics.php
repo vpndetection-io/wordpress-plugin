@@ -41,6 +41,15 @@ final class Diagnostics
     }
 
     /**
+     * An answer past the organization's overage cap: a paid key answered with Unlimited's fields,
+     * uncharged, until the period resets or the cap is raised in Billing.
+     */
+    public function capReached(): void
+    {
+        $this->note('cap', [], []);
+    }
+
+    /**
      * A visitor whose address resolved to a private one: a proxy in front of the site that the
      * Visitor address setting does not know.
      */

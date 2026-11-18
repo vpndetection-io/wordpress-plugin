@@ -205,6 +205,18 @@ wp option update vpndetection_api_key max-key > /dev/null
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
 check "a paid key blocks residential proxies" "$out" "$MESSAGE"
+out="$(visit "$CLEAN" -b /tmp/vpnd-admin 'http://wp/wp-admin/options-general.php?page=vpndetection')"
+check "  ... and its account card names the plan as served" "$out" "Connected, on the Max plan\\."
+wp option update vpndetection_api_key capped-key > /dev/null
+out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check_not "a paid key past its overage cap cannot block residential proxies" "$out" "$MESSAGE"
+diag="$(wp option get vpndetection_diagnostics --format=json)"
+check "  ... and the settings say the cap is why" "$diag" '"cap":\{'
+check_not "  ... not that the plan lacks them" "$diag" '"gaps"'
+check "  ... on the Dashboard too" "$(visit "$CLEAN" -b /tmp/vpnd-admin http://wp/wp-admin/index.php)" "reached its overage cap"
+wp option update vpndetection_api_key max-key > /dev/null
+visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In' > /dev/null
+check_not "  ... until an answer comes back whole" "$(wp option get vpndetection_diagnostics --format=json)" '"cap"'
 
 echo "==> new accounts and password resets"
 settings "{\"signals\":[\"vpn\"],\"areas\":$(areas register block)}"

@@ -152,6 +152,12 @@ final class Page
             };
             printf('<div class="notice notice-error"><p>%s</p></div>', esc_html($message));
         }
+        if ($where && isset($this->plugin->diagnostics->recent()['cap'])) {
+            printf(
+                '<div class="notice notice-warning"><p>%s</p></div>',
+                esc_html__('VPNDetection: your organization has reached its overage cap, so this site\'s checks get only the free plan\'s signals, uncharged, until the period resets or the cap is raised in Billing.', 'vpndetection'),
+            );
+        }
         if ($screen !== null && $screen->id === 'plugins' && get_option(self::SET_UP) !== '1') {
             printf(
                 '<div class="notice notice-info"><p>%s <a href="%s">%s</a></p></div>',
@@ -227,7 +233,7 @@ final class Page
                 esc_html(sprintf(
                     /* translators: %s: the plan's name, such as "Unlimited" or "Starter". */
                     __('Connected, on the %s plan.', 'vpndetection'),
-                    $free ? __('Unlimited', 'vpndetection') : ucfirst($account->plan->key),
+                    $account->plan->name,
                 )),
                 esc_html($free
                     ? sprintf(
@@ -601,7 +607,7 @@ final class Page
             checked((bool) $settings->get('fail_closed'), true, false),
             esc_html__('Refuse the visitor', 'vpndetection'),
         );
-        echo '<p class="description">' . esc_html__('A check fails when VPNDetection cannot be reached in time, or the allowance is spent.', 'vpndetection') . '</p></fieldset></td></tr>';
+        echo '<p class="description">' . esc_html__('A check fails when VPNDetection cannot be reached in time, or refuses the site\'s key.', 'vpndetection') . '</p></fieldset></td></tr>';
         printf(
             '<tr><th scope="row"><label for="vpnd-days">%s</label></th><td><input type="number" min="1" max="365" id="vpnd-days" name="%s[log_days]" value="%d" class="small-text"> %s</td></tr>',
             esc_html__('Keep activity for', 'vpndetection'),
