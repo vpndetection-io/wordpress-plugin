@@ -349,7 +349,7 @@ function checkout() {
         curl -sS -o /dev/null -H \"Nonce: \$nonce\" -H \"Cart-Token: \$token\" -H 'X-Forwarded-For: $1' \\
             -H 'Content-Type: application/json' -d '{\"id\":${product},\"quantity\":1}' http://wp/wp-json/wc/store/v1/cart/add-item
         curl -sS -i -H \"Nonce: \$nonce\" -H \"Cart-Token: \$token\" -H 'X-Forwarded-For: $1' -H 'Content-Type: application/json' \\
-            -d '{\"billing_address\":{\"first_name\":\"A\",\"last_name\":\"B\",\"address_1\":\"1 Main St\",\"city\":\"Berlin\",\"postcode\":\"10115\",\"country\":\"DE\",\"email\":\"buyer@example.com\"},\"payment_method\":\"cod\"}' \\
+            -d '{\"billing_address\":{\"first_name\":\"A\",\"last_name\":\"B\",\"address_1\":\"1 Main St\",\"city\":\"Berlin\",\"state\":\"DE-BE\",\"postcode\":\"10115\",\"country\":\"DE\",\"email\":\"buyer@example.com\"},\"payment_method\":\"cod\"}' \\
             http://wp/wp-json/wc/store/v1/checkout"
 }
 settings "{\"signals\":[\"vpn\"],\"areas\":$(areas checkout block)}"
