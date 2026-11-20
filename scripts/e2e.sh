@@ -52,10 +52,10 @@ run="vpnd-e2e-$$"
 failures=0
 function cleanup() {
     if [ "$keep" = y ] ; then
-        echo "kept: network ${run}, containers ${run}-{db,stub,wp,cli}, volume ${run}"
+        echo "kept: network ${run}, containers ${run}-{db,stub,wp,cli} and their anonymous volumes, volume ${run}"
         return
     fi
-    docker rm -f "${run}-db" "${run}-stub" "${run}-wp" "${run}-cli" > /dev/null 2>&1 || true
+    docker rm -fv "${run}-db" "${run}-stub" "${run}-wp" "${run}-cli" > /dev/null 2>&1 || true
     docker volume rm "$run" > /dev/null 2>&1 || true
     docker network rm "$run" > /dev/null 2>&1 || true
 }
