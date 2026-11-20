@@ -35,7 +35,7 @@ VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxi
 = 🎁 Free to start =
 
 * No account: VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays, countries and hosting on every visit, with no cap.
-* Free account: its first 100 checks each day try every signal, public, residential, mobile and datacenter proxies included.
+* Free account: try every signal, public, residential, mobile and datacenter proxies included.
 * Paid plan: every signal on every visit, with how often each proxy was seen.
 
 Connecting takes one click: sign in on vpndetection.io in the tab that opens and pick a key.
