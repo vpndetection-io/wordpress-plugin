@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.0.15 - 2026-11-20
+
+### Fixes
+
+- Settings and readme: the free trial without a count ([`ebc2295`](https://github.com/vpndetection-io/wordpress-plugin/commit/ebc2295566ccf2ef84dcfcc7930e209d6d22214a))
+- Bundle vpndetection 4.17.0: a spent trial's answer is kept a minute, not six hours ([`cddb1bf`](https://github.com/vpndetection-io/wordpress-plugin/commit/cddb1bfdadad028720dc0b60071fcbd37a550ef2))
+
 ## 1.0.14 - 2026-11-19
 
 ### Fixes
