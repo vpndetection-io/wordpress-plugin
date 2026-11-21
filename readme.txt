@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.15
+Stable tag: 1.1.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -93,6 +93,9 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.1.0 =
+* New signal, Mail servers, on a paid plan or the trial: refuse visitors whose address runs a mail server. Home and mobile connections can't, so such a visit comes from a server, a script or a hijacked machine. It's off until you tick it.
 
 = 1.0.15 =
 * The settings screen no longer states how many checks a connected free account tries each day. The pricing page says what the trial includes.

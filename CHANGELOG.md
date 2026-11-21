@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.1.0 - 2026-11-21
+
+### Features
+
+- Block addresses that run a mail server, on a paid plan or the trial ([`6914b36`](https://github.com/vpndetection-io/wordpress-plugin/commit/6914b3636d22e9623bbf4af2331e1ca1673da94b))
+  - Of the services, networks and routes a paid answer now names, only a mail server is a signal. SSH, web and DNS servers also answer from home routers, carrier, satellite and BitTorrent addresses are ordinary people's, and the relay and hosting signals already judge anycast space.
+
 ## 1.0.15 - 2026-11-20
 
 ### Fixes
