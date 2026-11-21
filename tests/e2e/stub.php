@@ -78,14 +78,19 @@ $location = [
     'timezone' => 'Europe/Berlin', 'currency_code' => 'EUR', 'currency_name' => 'Euro', 'currency_symbol' => 'EUR',
     'flag_emoji' => '', 'flag_unicode' => 'U+1F1E9 U+1F1EA',
 ];
-$asn = ['asn' => 3320, 'name' => 'Deutsche Telekom AG', 'domain' => 'telekom.de', 'type' => 'isp', 'prefix' => $ip . '/32'];
+$asn = ['asn' => 3320, 'name' => 'Deutsche Telekom AG', 'domain' => 'telekom.de', 'type' => 'isp', 'prefix' => $ip . '/32',
+    'country' => 'DE', 'rpki_status' => 'valid'];
 $flags = [
     'is_vpn' => false, 'is_hosting' => false, 'is_relay' => false, 'is_tor' => false, 'is_cdn' => false,
     'is_resproxy' => false, 'is_dcproxy' => false, 'is_mobproxy' => false, 'is_pubproxy' => false,
+    'is_carrier' => false, 'is_satellite' => false, 'is_ssh' => false, 'is_smtp' => false, 'is_web' => false,
+    'is_dns_resolver' => false, 'is_bittorrent' => false,
 ];
 $details = [
     'vpn' => (object) [], 'hosting' => (object) [], 'relay' => (object) [], 'tor' => (object) [], 'cdn' => (object) [],
     'resproxy' => (object) [], 'dcproxy' => (object) [], 'mobproxy' => (object) [], 'pubproxy' => (object) [],
+    'carrier' => (object) [], 'satellite' => (object) [], 'ssh' => (object) [], 'smtp' => (object) [], 'web' => [],
+    'dns_resolver' => (object) [], 'bittorrent' => (object) [],
 ];
 $class = ['provider' => '', 'confidence' => 'high', 'last_seen' => '2026-10-23'];
 $proxy = fn (int $hits): array => [
@@ -110,6 +115,13 @@ switch ($ip) {
         $flags['is_resproxy'] = true;
         $details['resproxy'] = $proxy(2);
         break;
+    case '5.6.7.9':
+        $flags['is_smtp'] = true;
+        $details['smtp'] = [
+            'port' => 25, 'banner' => '220 mail.example.net ESMTP', 'session_ok' => true,
+            'first_seen' => '2026-11-01', 'last_seen' => '2026-11-20',
+        ];
+        break;
     case '66.249.66.1':
         $flags['is_hosting'] = true;
         $details['hosting'] = ['provider' => 'gcp'] + $class;
@@ -122,12 +134,15 @@ if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
 $keyless = [
     'ip' => $ip, 'is_vpn' => $flags['is_vpn'], 'is_relay' => $flags['is_relay'], 'is_tor' => $flags['is_tor'],
     'relay' => $details['relay'], 'tor' => $details['tor'], 'location' => $location, 'asn' => $asn,
+    'is_anycast' => false, 'hostname' => 'host-' . str_replace(['.', ':'], '-', $ip) . '.example.net', 'is_bot' => $ip === '66.249.66.1',
 ];
 if ($key === '') {
     reply(200, $keyless);
 }
+// Every answer carries Unlimited's members; a paid one or the trial's adds the rest.
+$paid = ['ip' => $ip] + $flags + $details + $keyless;
 if ($key === 'free-key') {
-    reply(200, ['ip' => $ip] + $flags + $details + ['location' => $location, 'asn' => $asn, 'trial_expired' => false]);
+    reply(200, $paid + ['trial_expired' => false]);
 }
 if ($key === 'trial-spent') {
     reply(200, $keyless + ['trial_expired' => true]);
@@ -135,4 +150,4 @@ if ($key === 'trial-spent') {
 if ($key === 'capped-key') {
     reply(200, $keyless + ['cap_reached' => true]);
 }
-reply(200, ['ip' => $ip] + $flags + $details + ['location' => $location, 'asn' => $asn, 'cap_reached' => false]);
+reply(200, $paid + ['cap_reached' => false]);

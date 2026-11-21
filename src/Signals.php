@@ -16,6 +16,11 @@ defined('ABSPATH') || exit;
  * location and the network, and on every paid plan every flag and the detail behind it, a proxy's
  * sightings included. A key on the free plan also gets a trial: its account's lookups answer as a paid
  * plan's while it lasts, and the rest as Unlimited's, which `trial_expired` says.
+ *
+ * Of the services an address runs, only a mail server is a signal: home and mobile lines cannot run
+ * one, while routers and home servers answer SSH, web and DNS. Carrier, satellite, BitTorrent and
+ * anycast are no signals either: the first three are how ordinary people connect, and anycast is a
+ * route, whose visitors the relay and hosting signals already judge.
  */
 final class Signals
 {
@@ -33,6 +38,7 @@ final class Signals
         // A paid plan answers is_hosting; without one it is read by its network's type, which every answer carries.
         'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_NOTHING],
         'relay' => ['member' => 'isRelay', 'detail' => 'relay', 'needs' => self::NEEDS_NOTHING],
+        'smtp' => ['member' => 'isSmtp', 'detail' => 'smtp', 'needs' => self::NEEDS_PAID],
         'country' => ['member' => 'location', 'detail' => 'location', 'needs' => self::NEEDS_NOTHING],
     ];
 
@@ -56,6 +62,7 @@ final class Signals
             'dcproxy' => __('Datacenter proxies', 'vpndetection'),
             'hosting' => __('Hosting and cloud servers', 'vpndetection'),
             'relay' => __('Privacy relays', 'vpndetection'),
+            'smtp' => __('Mail servers', 'vpndetection'),
             'country' => __('Countries', 'vpndetection'),
             'unavailable' => __('Check unavailable', 'vpndetection'),
             'custom' => __('Custom rule', 'vpndetection'),
@@ -74,6 +81,7 @@ final class Signals
             'dcproxy' => __('Proxies running in datacenters.', 'vpndetection'),
             'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan, judged by the network an address belongs to.', 'vpndetection'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'vpndetection'),
+            'smtp' => __('Addresses that run a mail server. Home and mobile connections cannot, so a visitor from one is a server: a script, a bot or a hijacked machine.', 'vpndetection'),
             'country' => __('Visitors from the countries you list, wherever they connect from.', 'vpndetection'),
             default => '',
         };

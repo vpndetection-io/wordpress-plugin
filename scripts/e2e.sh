@@ -42,6 +42,7 @@ CLI_IMAGE="wordpress:cli-2.12.0-php${php}"
 VPN=45.83.91.1
 TOR=185.220.101.1
 RESPROXY=5.6.7.8
+MAIL=5.6.7.9
 GOOGLEBOT=66.249.66.1
 CLEAN=81.2.69.142
 MESSAGE="which this site does not allow"
@@ -207,6 +208,11 @@ out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In
 check "a paid key blocks residential proxies" "$out" "$MESSAGE"
 out="$(visit "$CLEAN" -b /tmp/vpnd-admin 'http://wp/wp-admin/options-general.php?page=vpndetection')"
 check "  ... and its account card names the plan as served" "$out" "Connected, on the Max plan\\."
+settings "{\"signals\":[\"smtp\"],\"areas\":$(areas login block)}"
+out="$(visit "$MAIL" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
+check "  ... and blocks an address that runs a mail server" "$out" "$MESSAGE"
+check_not "  ... letting one that runs none through" "$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')" "$MESSAGE"
+settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
 wp option update vpndetection_api_key capped-key > /dev/null
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
 check_not "a paid key past its overage cap cannot block residential proxies" "$out" "$MESSAGE"

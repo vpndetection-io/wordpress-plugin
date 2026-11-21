@@ -11,6 +11,7 @@ use VPNDetection\WordPress\Vendor\VPNDetection\Result;
 use VPNDetection\WordPress\Vendor\VPNDetection\Asn;
 use VPNDetection\WordPress\Vendor\VPNDetection\Location;
 use VPNDetection\WordPress\Vendor\VPNDetection\ProxyDetail;
+use VPNDetection\WordPress\Vendor\VPNDetection\SmtpDetail;
 
 final class SignalsTest extends TestCase
 {
@@ -56,11 +57,25 @@ final class SignalsTest extends TestCase
         foreach (['vpn', 'tor', 'relay', 'country', 'hosting'] as $signal) {
             $this->assertTrue(Signals::served($signal, null), "{$signal} without a key");
         }
-        foreach (['pubproxy', 'resproxy', 'mobproxy', 'dcproxy'] as $signal) {
+        foreach (['pubproxy', 'resproxy', 'mobproxy', 'dcproxy', 'smtp'] as $signal) {
             $this->assertFalse(Signals::served($signal, null), "{$signal} without a key");
             $this->assertFalse(Signals::served($signal, 'free'), "{$signal} on a free-plan key, past its daily trial");
         }
         $this->assertTrue(Signals::served('resproxy', 'starter'));
+        $this->assertTrue(Signals::served('smtp', 'starter'));
+    }
+
+    /** A paid answer names the mail server an address runs; without a key the member is a gap, never a pass. */
+    public function testMailServers(): void
+    {
+        $mail = new Result(ip: '5.6.7.9', isVpn: false, isBogon: false, isSmtp: true,
+            smtp: new SmtpDetail(port: 25, banner: '220 mail.example.net ESMTP', sessionOk: true,
+                firstSeen: '2026-11-01', lastSeen: '2026-11-20'));
+        $this->assertSame([['isSmtp' => true]], Signals::condition(['smtp'], 3, $mail), 'sightings bound only the counted proxies');
+        $this->assertTrue(Condition::matches(Signals::condition(['smtp'], 1, $mail), $mail));
+        $keyless = new Result(ip: '5.6.7.9', isVpn: false, isBogon: false, isTor: false, isRelay: false);
+        $this->assertFalse(Condition::matches(Signals::condition(['smtp'], 1, $keyless), $keyless));
+        $this->assertSame(['isSmtp'], Condition::missingMembers(Signals::condition(['smtp'], 1, $keyless), $keyless));
     }
 
     /** An answer that flags a proxy but carries no sightings reports a sighting count as a gap. */
