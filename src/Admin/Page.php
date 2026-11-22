@@ -225,8 +225,8 @@ final class Page
         echo '<h2>' . esc_html__('Account', 'vpndetection') . '</h2>';
         if ($account instanceof Entitlement) {
             $usage = $account->usage;
-            // The free plan, Unlimited, has no allowance to spend: its usage is its daily trial, the day's
-            // checks answered with every signal.
+            // The free plan, Unlimited, has no allowance to spend: its usage is its trial, the checks answered
+            // with every signal in the window the API names, a UTC calendar month.
             $free = $account->plan->key === self::FREE_PLAN;
             printf(
                 '<p><strong>%s</strong> %s</p>',
@@ -237,10 +237,11 @@ final class Page
                 )),
                 esc_html($free
                     ? sprintf(
-                        /* translators: 1: checks made today with every signal; 2: how many a day get every signal. */
-                        __('%1$s of today\'s %2$s checks with every signal used.', 'vpndetection'),
+                        /* translators: 1: checks made with every signal; 2: how many get every signal; 3: a date. */
+                        __('%1$s of %2$s checks with every signal used this month, which resets on %3$s.', 'vpndetection'),
                         number_format_i18n($usage->requests),
                         number_format_i18n($usage->quota),
+                        wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp()),
                     )
                     : sprintf(
                         /* translators: 1: checks made; 2: checks included; 3: a date. */
