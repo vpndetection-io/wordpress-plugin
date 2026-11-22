@@ -103,13 +103,15 @@ switch ($ip) {
         $details['vpn'] = ['provider' => 'nordvpn', 'last_seen' => '2026-10-24', 'confidence' => 'high'];
         $details['hosting'] = ['provider' => 'm247'] + $class;
         $location = ['country' => 'SE', 'country_name' => 'Sweden', 'timezone' => 'Europe/Stockholm'] + $location;
-        $asn = ['asn' => 9009, 'name' => 'M247 Europe SRL', 'domain' => 'm247global.com', 'type' => 'hosting', 'prefix' => '45.83.91.0/24'];
+        $asn = ['asn' => 9009, 'name' => 'M247 Europe SRL', 'domain' => 'm247global.com', 'type' => 'hosting', 'prefix' => '45.83.91.0/24',
+            'country' => 'RO', 'rpki_status' => 'valid'];
         break;
     case '185.220.101.1':
         $flags['is_tor'] = $flags['is_hosting'] = true;
         $details['tor'] = $class;
         $details['hosting'] = $class;
-        $asn = ['asn' => 60729, 'name' => 'Stiftung Erneuerbare Freiheit', 'domain' => 'zwiebelfreunde.de', 'type' => 'hosting', 'prefix' => '185.220.101.0/24'];
+        $asn = ['asn' => 60729, 'name' => 'Stiftung Erneuerbare Freiheit', 'domain' => 'zwiebelfreunde.de', 'type' => 'hosting', 'prefix' => '185.220.101.0/24',
+            'country' => 'DE', 'rpki_status' => 'valid'];
         break;
     case '5.6.7.8':
         $flags['is_resproxy'] = true;
@@ -125,7 +127,8 @@ switch ($ip) {
     case '66.249.66.1':
         $flags['is_hosting'] = true;
         $details['hosting'] = ['provider' => 'gcp'] + $class;
-        $asn = ['asn' => 15169, 'name' => 'Google LLC', 'domain' => 'google.com', 'type' => 'hosting', 'prefix' => '66.249.64.0/19'];
+        $asn = ['asn' => 15169, 'name' => 'Google LLC', 'domain' => 'google.com', 'type' => 'hosting', 'prefix' => '66.249.64.0/19',
+            'country' => 'US', 'rpki_status' => 'valid'];
         break;
 }
 if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
