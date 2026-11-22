@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.1.1 - 2026-11-22
+
+### Fixes
+
+- Count a free key's trial by the month, with the day it resets ([`a490db1`](https://github.com/vpndetection-io/wordpress-plugin/commit/a490db1ecb795a31b104f81bd72a4c5be67ecc98))
+- Bundle vpndetection 4.18.0, which changes no call the plugin makes ([`4e459f5`](https://github.com/vpndetection-io/wordpress-plugin/commit/4e459f55d23904d137659a5f3d90007ed8346238))
+
 ## 1.1.0 - 2026-11-21
 
 ### Features
