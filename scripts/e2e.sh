@@ -44,6 +44,7 @@ TOR=185.220.101.1
 RESPROXY=5.6.7.8
 MAIL=5.6.7.9
 GOOGLEBOT=66.249.66.1
+YANDEXBOT=5.255.253.1
 CLEAN=81.2.69.142
 MESSAGE="which this site does not allow"
 
@@ -261,6 +262,11 @@ check "and serves a clean one" "$out" "^HTTP/1.1 200"
 check "  ... with the browser check for a cached copy" "$out" "vpndetection-check-js"
 out="$(visit "$GOOGLEBOT" http://wp/)"
 check "Googlebot is never refused, though its address is hosting" "$out" "^HTTP/1.1 200"
+settings "{\"signals\":[\"country\"],\"countries\":\"RU\",\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
+out="$(visit "$YANDEXBOT" http://wp/)"
+check "a search engine's crawler its operator vouches for is never refused, though its country is" "$out" "^HTTP/1.1 200"
+check "  ... and logged nowhere" "$(wp db query "SELECT COUNT(*) FROM wp_vpndetection_activity WHERE ip='${YANDEXBOT}'" --skip-column-names)" "^0$"
+settings "{\"signals\":[\"vpn\",\"hosting\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
 out="$(visit "$VPN" http://wp/wp-json/vpndetection/v1/check -H 'Content-Type: application/json' -d '{"path":"/"}')"
 check "the browser check refuses a VPN visitor" "$out" '"blocked":true'
 check "  ... uncached" "$out" "^Cache-Control: no-store, private"

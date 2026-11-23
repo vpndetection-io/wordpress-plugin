@@ -98,17 +98,21 @@ final class Detector
      * to block, or the visitor passes.
      *
      * @param array<string, string> $context What the visitor was doing, for the activity log.
+     * @param (callable(Result): bool)|null $passes Whether an answer lets the visitor through whatever it matches.
      */
-    public function judge(string $area, array $context = []): ?Verdict
+    public function judge(string $area, array $context = [], ?callable $passes = null): ?Verdict
     {
         if (array_key_exists($area, $this->judged)) {
             return $this->judged[$area];
         }
-        return $this->judged[$area] = $this->decide($area, $context);
+        return $this->judged[$area] = $this->decide($area, $context, $passes);
     }
 
-    /** @param array<string, string> $context */
-    private function decide(string $area, array $context): ?Verdict
+    /**
+     * @param array<string, string> $context
+     * @param (callable(Result): bool)|null $passes
+     */
+    private function decide(string $area, array $context, ?callable $passes): ?Verdict
     {
         $action = $this->settings->action($area);
         $signals = $this->settings->signals($area);
@@ -126,7 +130,7 @@ final class Detector
             return $this->flag(new Verdict($area, $action, ['unavailable'], $visit, $context));
         }
         $result = $visit->result;
-        if ($result === null || $result->isBogon) {
+        if ($result === null || $result->isBogon || ($passes !== null && $passes($result))) {
             return null;
         }
         $minHits = (int) $this->settings->get('min_hits');

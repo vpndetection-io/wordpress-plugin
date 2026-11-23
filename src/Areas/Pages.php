@@ -9,6 +9,7 @@ use VPNDetection\WordPress\Detector;
 use VPNDetection\WordPress\Ranges;
 use VPNDetection\WordPress\Request;
 use VPNDetection\WordPress\Settings;
+use VPNDetection\WordPress\Vendor\VPNDetection\Result;
 use VPNDetection\WordPress\Verdict;
 
 defined('ABSPATH') || exit;
@@ -24,7 +25,8 @@ defined('ABSPATH') || exit;
  * cached either way.
  *
  * Search engines crawl from cloud addresses, which a hosting rule would refuse, so their published
- * crawler addresses are never refused here.
+ * crawler addresses are never refused here, nor any search engine's crawler a paid answer or the
+ * trial's says its operator vouches for.
  */
 final class Pages
 {
@@ -116,7 +118,17 @@ final class Pages
         if ($ip !== null && Address::inBlocks($ip, self::crawlers())) {
             return null;
         }
-        return $this->detector->judge('pages', ['path' => mb_substr($path, 0, 191)]);
+        return $this->detector->judge('pages', ['path' => mb_substr($path, 0, 191)], self::vouchedCrawler(...));
+    }
+
+    /**
+     * Whether the answer is a search engine's crawler its operator vouches for. Only a paid answer or
+     * the trial's says whose bot an address is, so without one only the published ranges above pass.
+     */
+    public static function vouchedCrawler(Result $result): bool
+    {
+        $bot = $result->bot;
+        return $result->isBot === true && $bot?->verified === true && in_array('search_engine', $bot->categories ?? [], true);
     }
 
     private function refuse(Verdict $verdict): never

@@ -90,7 +90,12 @@ $details = [
     'vpn' => (object) [], 'hosting' => (object) [], 'relay' => (object) [], 'tor' => (object) [], 'cdn' => (object) [],
     'resproxy' => (object) [], 'dcproxy' => (object) [], 'mobproxy' => (object) [], 'pubproxy' => (object) [],
     'carrier' => (object) [], 'satellite' => (object) [], 'ssh' => (object) [], 'smtp' => (object) [], 'web' => [],
-    'dns_resolver' => (object) [], 'bittorrent' => (object) [],
+    'dns_resolver' => (object) [], 'bittorrent' => (object) [], 'bot' => (object) [],
+];
+$bot = fn (string $provider, string $name, string $agent, array $categories, string $by): array => [
+    'provider' => $provider, 'provider_name' => $name, 'agents' => [$agent], 'categories' => $categories,
+    'verified' => true, 'identity' => 'verified', 'verified_by' => $by, 'confidence' => 'high',
+    'first_seen' => '2026-11-15', 'last_seen' => '2026-11-22',
 ];
 $class = ['provider' => '', 'confidence' => 'high', 'last_seen' => '2026-10-23'];
 $proxy = fn (int $hits): array => [
@@ -127,8 +132,16 @@ switch ($ip) {
     case '66.249.66.1':
         $flags['is_hosting'] = true;
         $details['hosting'] = ['provider' => 'gcp'] + $class;
+        $details['bot'] = $bot('google', 'Google', 'Googlebot', ['ai_search', 'other', 'search_engine'], 'list');
         $asn = ['asn' => 15169, 'name' => 'Google LLC', 'domain' => 'google.com', 'type' => 'hosting', 'prefix' => '66.249.64.0/19',
             'country' => 'US', 'rpki_status' => 'valid'];
+        break;
+    case '5.255.253.1':
+        // A search engine's crawler outside the plugin's published ranges, which only a paid answer vouches for.
+        $details['bot'] = $bot('yandex', 'Yandex', 'YandexBot', ['search_engine'], 'rdns');
+        $location = ['country' => 'RU', 'country_name' => 'Russia', 'timezone' => 'Europe/Moscow'] + $location;
+        $asn = ['asn' => 208398, 'name' => 'Edge Technology Plus d.o.o. Beograd', 'domain' => 'tele.tech', 'type' => 'isp',
+            'prefix' => '5.255.192.0/18', 'country' => 'RS', 'rpki_status' => 'valid'];
         break;
 }
 if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
@@ -137,7 +150,7 @@ if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
 $keyless = [
     'ip' => $ip, 'is_vpn' => $flags['is_vpn'], 'is_relay' => $flags['is_relay'], 'is_tor' => $flags['is_tor'],
     'relay' => $details['relay'], 'tor' => $details['tor'], 'location' => $location, 'asn' => $asn,
-    'is_anycast' => false, 'hostname' => 'host-' . str_replace(['.', ':'], '-', $ip) . '.example.net', 'is_bot' => $ip === '66.249.66.1',
+    'is_anycast' => false, 'hostname' => 'host-' . str_replace(['.', ':'], '-', $ip) . '.example.net', 'is_bot' => in_array($ip, ['66.249.66.1', '5.255.253.1'], true),
 ];
 if ($key === '') {
     reply(200, $keyless);

@@ -53,7 +53,7 @@ The settings page shows the address the plugin sees for you, and says so when yo
 
 A page cache answers without running WordPress, so a page checked only on the server would reach whoever the cache serves. A protected page therefore carries a small script that asks the site, from the visitor's browser, whether this visitor may see it; it works with any cache, but not for a visitor who turns scripts off. For pages that must never reach a refused visitor, tick "Keep these pages out of the page cache" and the server checks every visit. A refusal is never cached either way.
 
-Search engines crawl from cloud addresses, so Google's, Bing's, Apple's and DuckDuckGo's published crawler addresses are never refused from your pages.
+Search engines crawl from cloud addresses, so Google's, Bing's, Apple's and DuckDuckGo's published crawler addresses are never refused from your pages. On a paid plan or the trial, the answer also says whose bot an address is and whether its operator vouches for it, so any search engine's crawler it vouches for is never refused from them either.
 
 ## Costs and failures
 
