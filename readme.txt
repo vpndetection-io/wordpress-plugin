@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -93,6 +93,10 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.2.0 =
+* On a paid plan or the trial, any search engine's crawler whose operator vouches for its address is never refused from your pages, beside Google's, Bing's, Apple's and DuckDuckGo's published addresses, which pass on every plan.
+* The bundled VPNDetection PHP library is now 4.19.0. Nothing about how the plugin works changes.
 
 = 1.1.1 =
 * The account card counts the free plan's trial of every signal by the month, as VPNDetection now does, and says the day it resets.

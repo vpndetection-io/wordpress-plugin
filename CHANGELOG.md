@@ -2,6 +2,17 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.2.0 - 2026-11-23
+
+### Features
+
+- Never refuse a vouched-for search engine crawler from your pages ([`a0a89c5`](https://github.com/vpndetection-io/wordpress-plugin/commit/a0a89c512930506af49f65fcd7a35dd71034618a))
+  - On a paid plan or the trial, the answer says whose bot an address is and whether its operator vouches for it. Google's, Bing's, Apple's and DuckDuckGo's published ranges still pass on every plan.
+
+### Fixes
+
+- Bundle vpndetection 4.19.0, which changes no call the plugin makes ([`31e8f3d`](https://github.com/vpndetection-io/wordpress-plugin/commit/31e8f3d114a767e6ab5d77cda0100ace2a7c8cb4))
+
 ## 1.1.1 - 2026-11-22
 
 ### Fixes
