@@ -619,24 +619,24 @@
         },
         {
             "name": "vpndetection/vpndetection",
-            "version": "v4.18.0",
+            "version": "v4.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vpndetection-io/sdk-php.git",
-                "reference": "0f5b0f9b9fbf0ad989fa268b7c4c67dfd4b4daa6"
+                "reference": "e5aab3496820cc6ad1249337a4958610ab3abb43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vpndetection-io/sdk-php/zipball/0f5b0f9b9fbf0ad989fa268b7c4c67dfd4b4daa6",
-                "reference": "0f5b0f9b9fbf0ad989fa268b7c4c67dfd4b4daa6",
+                "url": "https://api.github.com/repos/vpndetection-io/sdk-php/zipball/e5aab3496820cc6ad1249337a4958610ab3abb43",
+                "reference": "e5aab3496820cc6ad1249337a4958610ab3abb43",
                 "shasum": ""
             },
             "require": {
                 "composer-runtime-api": "^2.0",
                 "ext-json": "*",
-                "guzzlehttp/guzzle": "^7.5 || ^8.0",
+                "guzzlehttp/guzzle": "^7.15.2 || ^8.0.1",
                 "guzzlehttp/promises": "^2.0 || ^3.0",
-                "guzzlehttp/psr7": "^2.4 || ^3.0",
+                "guzzlehttp/psr7": "^2.12.3 || ^3.0",
                 "php": "^8.2",
                 "psr/http-message": "^1.1 || ^2.0",
                 "psr/simple-cache": "^1.0 || ^2.0 || ^3.0"
@@ -681,7 +681,7 @@
                 "issues": "https://github.com/vpndetection-io/sdk-php/issues",
                 "source": "https://github.com/vpndetection-io/sdk-php"
             },
-            "time": "2026-11-22T06:53:00+00:00"
+            "time": "2026-11-23T06:56:00+00:00"
         }
     ],
     "packages-dev": [
