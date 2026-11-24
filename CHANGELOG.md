@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.2.1 - 2026-11-24
+
+### Fixes
+
+- Bundle vpndetection 4.20.0: a filtered rule on a list matches any element ([`6e91a21`](https://github.com/vpndetection-io/wordpress-plugin/commit/6e91a21074a8130adf85ba25791f4a42647c3173))
+  - A rule you return from the `vpndetection_condition` filter may name a member the answer holds as a list, such as a public proxy's protocols; it now matches when any element does, where it never matched before.
+
 ## 1.2.0 - 2026-11-23
 
 ### Features
