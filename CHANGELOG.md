@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.2.2 - 2026-11-24
+
+### Fixes
+
+- Count a free key's trial as its 14 days, not a month that resets ([`13fd5c4`](https://github.com/vpndetection-io/wordpress-plugin/commit/13fd5c4d02852c052db487132f0d1bf4a212ebf0))
+  - The free plan tries every signal for 14 days from your first check, up to 250,000 checks. The account card counts them until the day the trial ends, and once it has ended, says so.
+
 ## 1.2.1 - 2026-11-24
 
 ### Fixes
