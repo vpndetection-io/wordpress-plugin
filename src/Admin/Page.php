@@ -257,7 +257,7 @@ final class Page
             printf(
                 '<p><strong>%s</strong> %s</p>',
                 esc_html(sprintf(
-                    /* translators: %s: the plan's name, such as "Unlimited" or "Starter". */
+                    /* translators: %s: the plan's name, such as "Unlimited" or "Data". */
                     __('Connected, on the %s plan.', 'vpndetection'),
                     $account->plan->name,
                 )),
