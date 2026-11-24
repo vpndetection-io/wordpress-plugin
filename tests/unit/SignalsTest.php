@@ -11,6 +11,7 @@ use VPNDetection\WordPress\Vendor\VPNDetection\Result;
 use VPNDetection\WordPress\Vendor\VPNDetection\Asn;
 use VPNDetection\WordPress\Vendor\VPNDetection\Location;
 use VPNDetection\WordPress\Vendor\VPNDetection\ProxyDetail;
+use VPNDetection\WordPress\Vendor\VPNDetection\PubproxyDetail;
 use VPNDetection\WordPress\Vendor\VPNDetection\SmtpDetail;
 
 final class SignalsTest extends TestCase
@@ -44,6 +45,20 @@ final class SignalsTest extends TestCase
         $this->assertTrue(Condition::matches(Signals::condition(['resproxy'], 2), $seenTwice));
         $this->assertFalse(Condition::matches(Signals::condition(['resproxy'], 3), $seenTwice));
         $this->assertFalse(Condition::matches(Signals::condition(['vpn'], 1), $seenTwice));
+    }
+
+    /** A rule the vpndetection_condition filter returns may name a list member, which any element matches. */
+    public function testAFilteredRuleOnAListMatchesAnyElement(): void
+    {
+        $socks = new Result(
+            ip: '5.6.7.10',
+            isVpn: false,
+            isBogon: false,
+            isPubproxy: true,
+            pubproxy: new PubproxyDetail(protocols: ['http', 'socks5']),
+        );
+        $this->assertTrue(Condition::matches([['isPubproxy' => true, 'pubproxy' => ['protocols' => 'socks5']]], $socks));
+        $this->assertFalse(Condition::matches([['isPubproxy' => true, 'pubproxy' => ['protocols' => 'socks4']]], $socks));
     }
 
     public function testAKeylessAnswerLacksAKeyedSignal(): void
