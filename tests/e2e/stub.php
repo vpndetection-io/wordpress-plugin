@@ -1,7 +1,7 @@
 <?php
 
 // A stand-in for the VPNDetection API, answering the addresses the e2e scenarios use in the shapes the
-// real API answers them, by plan: no key, a free-plan key within its daily trial (`free-key`), one past it
+// real API answers them, by plan: no key, a free-plan key within its trial (`free-key`), one past it
 // (`trial-spent`), a paid one past its organization's overage cap (`capped-key`), or any other key as a
 // paid one.
 // Every request is appended to /tmp/stub.log, so a scenario can count lookups. Run with `php -S`.
@@ -59,13 +59,22 @@ if ($path === '/api/v1/entitlement') {
         'org_id' => '85bb51e4-2eb6-4a31-8e4d-02ba8b98fe61',
         'apikey' => ['id' => '0ab424cc-7619-4dad-b027-afacdc2cedb0', 'expires' => null, 'allowed_cidrs' => []],
         'plan' => ['key' => $free ? 'free' : 'max-2026', 'tier' => $free ? 'free' : 'max', 'name' => $free ? 'Unlimited' : 'Max'],
-        'usage' => [
-            'requests' => 1240,
-            'quota' => $free ? 100 : 5000000,
-            'hard_limit' => null,
-            'window_start' => '2026-10-04T07:00:00Z',
-            'window_end' => '2026-11-04T07:00:00Z',
-        ],
+        // A free key's usage is its trial: 14 days from the org's first check, 250,000 checks at most.
+        'usage' => $free
+            ? [
+                'requests' => $key === 'trial-spent' ? 250000 : 1240,
+                'quota' => 250000,
+                'hard_limit' => null,
+                'window_start' => gmdate('Y-m-d\\TH:i:s\\Z', time() - 3 * 86400),
+                'window_end' => gmdate('Y-m-d\\TH:i:s\\Z', time() + 11 * 86400),
+            ]
+            : [
+                'requests' => 1240,
+                'quota' => 5000000,
+                'hard_limit' => null,
+                'window_start' => '2026-10-04T07:00:00Z',
+                'window_end' => '2026-11-04T07:00:00Z',
+            ],
     ]);
 }
 if ($key === 'spent-key') {

@@ -226,8 +226,34 @@ final class Page
         if ($account instanceof Entitlement) {
             $usage = $account->usage;
             // The free plan, Unlimited, has no allowance to spend: its usage is its trial, the checks answered
-            // with every signal in the window the API names, a UTC calendar month.
+            // with every signal in the window the API names, 14 days from the org's first check, up to its quota.
+            // Past either the trial is over for good, and checks go on with Unlimited's signals.
             $free = $account->plan->key === self::FREE_PLAN;
+            $trialOver = $free && (($usage->quota > 0 && $usage->requests >= $usage->quota) || $usage->windowEnd->getTimestamp() <= time());
+            $until = wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp());
+            if ($trialOver) {
+                $line = sprintf(
+                    /* translators: %s: the free plan's name, "Unlimited". */
+                    __('Your trial of every signal has ended, so checks go on with the %s plan\'s signals.', 'vpndetection'),
+                    $account->plan->name,
+                );
+            } elseif ($free) {
+                $line = sprintf(
+                    /* translators: 1: checks made with every signal; 2: how many the trial gives every signal; 3: a date. */
+                    __('%1$s of %2$s checks with every signal in your trial, until %3$s.', 'vpndetection'),
+                    number_format_i18n($usage->requests),
+                    number_format_i18n($usage->quota),
+                    $until,
+                );
+            } else {
+                $line = sprintf(
+                    /* translators: 1: checks made; 2: checks included; 3: a date. */
+                    __('%1$s of %2$s checks used this period, which resets on %3$s.', 'vpndetection'),
+                    number_format_i18n($usage->requests),
+                    number_format_i18n($usage->quota),
+                    $until,
+                );
+            }
             printf(
                 '<p><strong>%s</strong> %s</p>',
                 esc_html(sprintf(
@@ -235,21 +261,7 @@ final class Page
                     __('Connected, on the %s plan.', 'vpndetection'),
                     $account->plan->name,
                 )),
-                esc_html($free
-                    ? sprintf(
-                        /* translators: 1: checks made with every signal; 2: how many get every signal; 3: a date. */
-                        __('%1$s of %2$s checks with every signal used this month, which resets on %3$s.', 'vpndetection'),
-                        number_format_i18n($usage->requests),
-                        number_format_i18n($usage->quota),
-                        wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp()),
-                    )
-                    : sprintf(
-                        /* translators: 1: checks made; 2: checks included; 3: a date. */
-                        __('%1$s of %2$s checks used this period, which resets on %3$s.', 'vpndetection'),
-                        number_format_i18n($usage->requests),
-                        number_format_i18n($usage->quota),
-                        wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp()),
-                    )),
+                esc_html($line),
             );
             echo '<div class="vpnd-actions">';
             printf(
