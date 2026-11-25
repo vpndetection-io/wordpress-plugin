@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.3.0 - 2026-11-25
+
+### Features
+
+- Refuse forged crawlers with a new signal, off until you tick it ([`3cc93a1`](https://github.com/vpndetection-io/wordpress-plugin/commit/3cc93a1fbf28ab51463fed470170c07916f243a1))
+  - New signal, Forged crawlers, on a paid plan or the trial: refuse a client whose user agent claims a crawler, such as Googlebot, from an address that crawler doesn't use. While an area blocks it, each check sends the visitor's user agent with their address. It's off until you tick it.
+
 ## 1.2.3 - 2026-11-25
 
 ### Fixes
