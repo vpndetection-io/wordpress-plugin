@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -93,6 +93,9 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, keeps
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.2.3 =
+* The settings page says a paid plan checks every signal on every visit: VPNDetection sells one, at the quota you pick.
 
 = 1.2.2 =
 * The account card counts the free plan's trial as VPNDetection now runs it: every signal for 14 days from your first check, up to 250,000 checks, and the day it ends. Once it has ended, it says so.

@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.2.3 - 2026-11-25
+
+### Fixes
+
+- Settings: a paid plan checks every signal, not paid plans ([`8d4f80f`](https://github.com/vpndetection-io/wordpress-plugin/commit/8d4f80fe114a9aa51ae53763f797223d7c54ea30))
+  - The settings page says a paid plan checks every signal on every visit: VPNDetection sells one, at the quota you pick.
+
 ## 1.2.2 - 2026-11-24
 
 ### Fixes
