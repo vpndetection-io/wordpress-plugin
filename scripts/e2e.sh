@@ -284,7 +284,7 @@ done
 check "  ... and no browser's user agent costs a lookup" "$(lookups "$CLEAN")" "^${before}$"
 codes=""
 for i in 1 2 3 4 5 6 7 8; do
-    codes+="$(visit "$CLEAN" http://wp/ -A "${GOOGLEBOT_AGENT} ${i}" | head -1 | cut -d' ' -f2)"
+    codes+="$(visit "$CLEAN" http://wp/ -A "${GOOGLEBOT_AGENT} ${i}" -o /dev/null -w '%{http_code}')"
 done
 check "  ... while every crawler the address claims is refused" "$codes" "^(403){8}$"
 check "  ... at most four of them carried by a lookup" \
