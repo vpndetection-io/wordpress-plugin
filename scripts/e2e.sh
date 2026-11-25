@@ -277,6 +277,18 @@ check "Forged crawlers refuses a client posing as Googlebot" "$out" "^HTTP/1.1 4
 check "  ... saying so" "$out" "posing as a crawler"
 check "  ... having sent its user agent" "$(docker exec "${run}-stub" cat /tmp/stub.log)" " /${CLEAN} max-key ua=Mozilla"
 check "  ... where a browser from that address is served" "$(visit "$CLEAN" http://wp/ -A 'Mozilla/5.0 Firefox/145.0')" "^HTTP/1.1 200"
+before="$(lookups "$CLEAN")"
+for i in 1 2 3 4 5; do
+    visit "$CLEAN" http://wp/ -A "Mozilla/5.0 Firefox/14${i}.0" > /dev/null
+done
+check "  ... and no browser's user agent costs a lookup" "$(lookups "$CLEAN")" "^${before}$"
+codes=""
+for i in 1 2 3 4 5 6 7 8; do
+    codes+="$(visit "$CLEAN" http://wp/ -A "${GOOGLEBOT_AGENT} ${i}" | head -1 | cut -d' ' -f2)"
+done
+check "  ... while every crawler the address claims is refused" "$codes" "^(403){8}$"
+check "  ... at most four of them carried by a lookup" \
+    "$(docker exec "${run}-stub" sh -c "grep -c ' /${CLEAN} max-key ua=' /tmp/stub.log || true")" "^4$"
 settings "{\"signals\":[\"vpn\",\"hosting\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
 out="$(visit "$VPN" http://wp/wp-json/vpndetection/v1/check -H 'Content-Type: application/json' -d '{"path":"/"}')"
 check "the browser check refuses a VPN visitor" "$out" '"blocked":true'

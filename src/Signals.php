@@ -85,7 +85,7 @@ final class Signals
             'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan, judged by the network an address belongs to.', 'vpndetection'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'vpndetection'),
             'smtp' => __('Addresses that run a mail server. Home and mobile connections cannot, so a visitor from one is a server: a script, a bot or a hijacked machine.', 'vpndetection'),
-            'spoofed' => __('Visitors whose browser claims to be a crawler, such as Googlebot, from an address that crawler does not use. Each visitor\'s user agent goes with the lookup, so an address is looked up once for each user agent it comes with.', 'vpndetection'),
+            'spoofed' => __('Visitors whose browser claims to be a crawler, such as Googlebot, from an address that crawler does not use. A user agent naming a crawler goes with the lookup, for at most four of them per address while answers are kept.', 'vpndetection'),
             'country' => __('Visitors from the countries you list, wherever they connect from.', 'vpndetection'),
             default => '',
         };

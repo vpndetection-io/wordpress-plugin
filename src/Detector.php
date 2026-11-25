@@ -34,6 +34,9 @@ final class Detector
     private bool $resolved = false;
     private ?string $agent = null;
     private bool $agentRead = false;
+    /** A crawler claimed past its address's bound, whose verdict an earlier claim from there gives. */
+    private bool $pastBound = false;
+    private bool $spoofedBefore = false;
     /** @var array<string, Verdict|null> */
     private array $judged = [];
 
@@ -59,8 +62,14 @@ final class Detector
             timeout: $timeout,
             httpClient: WpHttp::client(),
             cacheStore: new Store(),
-            cacheTtlSeconds: (float) apply_filters('vpndetection_cache_ttl', 6 * HOUR_IN_SECONDS),
+            cacheTtlSeconds: (float) self::cacheTtl(),
         ));
+    }
+
+    /** Seconds an answer is kept. */
+    public static function cacheTtl(): int
+    {
+        return (int) apply_filters('vpndetection_cache_ttl', 6 * HOUR_IN_SECONDS);
     }
 
     /** The API's origin. A constant points the plugin at another deployment, for testing it. */
@@ -95,15 +104,29 @@ final class Detector
         return $this->address;
     }
 
-    /** The visitor's User-Agent, which the lookup carries only while an area blocks forged crawlers. */
+    /**
+     * The visitor's User-Agent, which the lookup carries only while an area blocks forged crawlers, the
+     * agent names a crawler, and its address is not past its bound of them.
+     */
     public function agent(): ?string
     {
         if (!$this->agentRead) {
-            $agent = $this->settings->sendsUserAgent() ? (Request::server()['HTTP_USER_AGENT'] ?? '') : '';
-            $this->agent = $agent === '' ? null : $agent;
             $this->agentRead = true;
+            $agent = $this->settings->sendsUserAgent() ? (string) (Request::server()['HTTP_USER_AGENT'] ?? '') : '';
+            if ($agent === '' || !Claims::namesCrawler($agent)) {
+                return null;
+            }
+            $ip = $this->address();
+            [$sent, $this->spoofedBefore] = $ip === null ? [true, false] : $this->claims()->plan($ip, $agent);
+            $this->agent = $sent ? $agent : null;
+            $this->pastBound = !$sent;
         }
         return $this->agent;
+    }
+
+    private function claims(): Claims
+    {
+        return new Claims(new Store(), self::cacheTtl());
     }
 
     /**
@@ -129,11 +152,14 @@ final class Detector
     {
         $action = $this->settings->action($area);
         $signals = $this->settings->signals($area);
-        // A request with no User-Agent has none to forge, and its answer no verdict to read.
+        // A lookup that carried no agent has no verdict to read: a browser has none to forge, and a crawler
+        // claimed past its address's bound takes the verdict of the address's earlier claims.
+        $forged = false;
         if ($this->agent() === null) {
+            $forged = $this->pastBound && $this->spoofedBefore && in_array('spoofed', $signals, true);
             $signals = array_values(array_diff($signals, ['spoofed']));
         }
-        if ($action === 'off' || $signals === []) {
+        if ($action === 'off' || ($signals === [] && !$forged)) {
             return null;
         }
         $visit = $this->visit();
@@ -150,6 +176,26 @@ final class Detector
         if ($result === null || $result->isBogon || ($passes !== null && $passes($result))) {
             return null;
         }
+        // An address its bot's operator vouches for never inherits a verdict.
+        $forged = $forged && $result->bot?->verified !== true;
+        $matched = $signals === [] ? null : $this->matched($area, $signals, $result);
+        if ($forged) {
+            $matched = [...($matched ?? []), 'spoofed'];
+        }
+        if ($matched === null) {
+            return null;
+        }
+        return $this->flag(new Verdict($area, $action, $matched === [] ? ['custom'] : $matched, $visit, $context));
+    }
+
+    /**
+     * The signals this answer matches, empty where only a filtered rule matched, null where nothing did.
+     *
+     * @param list<string> $signals
+     * @return list<string>|null
+     */
+    private function matched(string $area, array $signals, Result $result): ?array
+    {
         $minHits = (int) $this->settings->get('min_hits');
         $countries = $this->settings->countries();
         $condition = Signals::condition($signals, $minHits, $result, $countries);
@@ -180,7 +226,7 @@ final class Detector
                 $matched[] = $signal;
             }
         }
-        return $this->flag(new Verdict($area, $action, $matched === [] ? ['custom'] : $matched, $visit, $context));
+        return $matched;
     }
 
     private function flag(Verdict $verdict): ?Verdict
@@ -226,6 +272,9 @@ final class Detector
             static fn (): string => $ip,
         );
         $lookup = $core->evaluate(null, $agent);
+        if ($agent !== null && $lookup?->result !== null) {
+            $this->claims()->note($ip, $agent, $lookup->result->userAgent?->verdict);
+        }
         if ($lookup === null || $lookup->result === null) {
             if ($lookup?->error !== null) {
                 $this->diagnostics->lookupFailed($lookup->error);
