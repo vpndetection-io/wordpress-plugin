@@ -293,7 +293,7 @@ final class Page
             echo '<p>' . esc_html__('This site uses the API key set as VPNDETECTION_API_KEY in wp-config.php.', 'vpndetection') . '</p></div>';
             return;
         }
-        echo '<p>' . esc_html__('Connect a VPNDetection account to try every signal, the proxies included. Paid plans check every signal on every visit.', 'vpndetection') . '</p>';
+        echo '<p>' . esc_html__('Connect a VPNDetection account to try every signal, the proxies included. A paid plan checks every signal on every visit.', 'vpndetection') . '</p>';
         echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs, Tor, privacy relays, countries and hosting, judged by the network an address belongs to, with no cap.', 'vpndetection') . '</p>';
         printf(
             '<p><button type="button" class="button button-primary" id="vpnd-connect">%s</button> <span id="vpnd-connect-status" aria-live="polite"></span></p>',

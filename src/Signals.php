@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  *
  * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: on
  * Unlimited, the free plan, with a key or without one, a lookup carries `is_vpn`, Tor, relays, the
- * location and the network, and on every paid plan every flag and the detail behind it, a proxy's
+ * location and the network, and on a paid plan every flag and the detail behind it, a proxy's
  * sightings included. A key on the free plan also gets a trial: its account's lookups answer as a paid
  * plan's while it lasts, and the rest as Unlimited's, which `trial_expired` says.
  *
