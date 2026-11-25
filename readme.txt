@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -93,6 +93,9 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, and t
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.3.1 =
+* The bundled VPNDetection PHP library is now 4.20.1. Nothing about how the plugin works changes.
 
 = 1.3.0 =
 * New signal, Forged crawlers, on a paid plan or the trial: refuse a client whose user agent claims a crawler, such as Googlebot, from an address that crawler doesn't use. While an area blocks it, each check sends the visitor's user agent with their address. It's off until you tick it.
