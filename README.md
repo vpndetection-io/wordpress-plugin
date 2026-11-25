@@ -17,7 +17,7 @@ Open Settings > VPNDetection and click Connect with VPNDetection. A tab opens on
 define('VPNDETECTION_API_KEY', 'your-api-key');
 ```
 
-VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays, countries and hosting on every visit, with no cap and no account needed. Connect a free account to try every signal, public, residential, mobile and datacenter proxies included; every paid plan checks every signal on every visit, with how often each proxy was seen.
+VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays, countries and hosting on every visit, with no cap and no account needed. Connect a free account to try every signal, public, residential, mobile and datacenter proxies included; a paid plan checks every signal on every visit, with how often each proxy was seen.
 
 Nothing is checked until you turn an area on.
 
