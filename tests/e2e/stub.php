@@ -10,7 +10,8 @@ declare(strict_types=1);
 
 $path = (string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $key = trim(preg_replace('/^Bearer\s+/i', '', $_SERVER['HTTP_AUTHORIZATION'] ?? '') ?: ($_SERVER['HTTP_X_API_KEY'] ?? ''));
-file_put_contents('/tmp/stub.log', sprintf("%s %s %s\n", $_SERVER['REQUEST_METHOD'] ?? '', $path, $key === '' ? '-' : $key), FILE_APPEND);
+$agent = isset($_GET['user_agent']) && is_string($_GET['user_agent']) ? $_GET['user_agent'] : '';
+file_put_contents('/tmp/stub.log', sprintf("%s %s %s%s\n", $_SERVER['REQUEST_METHOD'] ?? '', $path, $key === '' ? '-' : $key, $agent === '' ? '' : ' ua=' . rawurlencode($agent)), FILE_APPEND);
 header('Content-Type: application/json');
 
 function reply(int $status, array $body): never
@@ -164,8 +165,17 @@ $keyless = [
 if ($key === '') {
     reply(200, $keyless);
 }
-// Every answer carries Unlimited's members; a paid one or the trial's adds the rest.
+// Every answer carries Unlimited's members; a paid one or the trial's adds the rest, and a verdict on the
+// User-Agent sent with it: Googlebot is borne out only on Google's crawler address.
 $paid = ['ip' => $ip] + $flags + $details + $keyless;
+if ($agent !== '') {
+    $crawler = str_contains($agent, 'Googlebot');
+    $paid['user_agent'] = [
+        'agent' => $crawler ? 'Googlebot' : 'Unknown',
+        'kind' => $crawler ? 'bot' : 'unknown',
+        'verdict' => $crawler ? ($ip === '66.249.66.1' ? 'verified' : 'spoofed') : 'not_bot',
+    ];
+}
 if ($key === 'free-key') {
     reply(200, $paid + ['trial_expired' => false]);
 }

@@ -32,6 +32,8 @@ final class Detector
     private ?Client $client = null;
     private ?string $address = null;
     private bool $resolved = false;
+    private ?string $agent = null;
+    private bool $agentRead = false;
     /** @var array<string, Verdict|null> */
     private array $judged = [];
 
@@ -93,6 +95,17 @@ final class Detector
         return $this->address;
     }
 
+    /** The visitor's User-Agent, which the lookup carries only while an area blocks forged crawlers. */
+    public function agent(): ?string
+    {
+        if (!$this->agentRead) {
+            $agent = $this->settings->sendsUserAgent() ? (Request::server()['HTTP_USER_AGENT'] ?? '') : '';
+            $this->agent = $agent === '' ? null : $agent;
+            $this->agentRead = true;
+        }
+        return $this->agent;
+    }
+
     /**
      * Whether an area should act on this visitor, and how. Null when the area is off, nothing is set
      * to block, or the visitor passes.
@@ -116,6 +129,10 @@ final class Detector
     {
         $action = $this->settings->action($area);
         $signals = $this->settings->signals($area);
+        // A request with no User-Agent has none to forge, and its answer no verdict to read.
+        if ($this->agent() === null) {
+            $signals = array_values(array_diff($signals, ['spoofed']));
+        }
         if ($action === 'off' || $signals === []) {
             return null;
         }
@@ -196,12 +213,19 @@ final class Detector
             $this->diagnostics->privateAddress($ip);
         }
         // The core's own warnings name the SDK's settings; the plugin says it in its own terms above.
+        // allowBots is what sends the agent: no condition is passed, so it lets no one through itself.
+        $agent = $this->agent();
         $core = new Core(
-            new MiddlewareOptions(client: $this->client(), onMissingField: 'ignore', onWarn: static function (): void {
-            }),
+            new MiddlewareOptions(
+                client: $this->client(),
+                allowBots: $agent !== null,
+                onMissingField: 'ignore',
+                onWarn: static function (): void {
+                },
+            ),
             static fn (): string => $ip,
         );
-        $lookup = $core->evaluate(null);
+        $lookup = $core->evaluate(null, $agent);
         if ($lookup === null || $lookup->result === null) {
             if ($lookup?->error !== null) {
                 $this->diagnostics->lookupFailed($lookup->error);

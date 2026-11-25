@@ -39,6 +39,8 @@ final class Signals
         'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_NOTHING],
         'relay' => ['member' => 'isRelay', 'detail' => 'relay', 'needs' => self::NEEDS_NOTHING],
         'smtp' => ['member' => 'isSmtp', 'detail' => 'smtp', 'needs' => self::NEEDS_PAID],
+        // The one signal judged on the visitor's User-Agent, which a lookup carries only while an area uses it.
+        'spoofed' => ['member' => 'userAgent', 'detail' => 'userAgent', 'needs' => self::NEEDS_PAID],
         'country' => ['member' => 'location', 'detail' => 'location', 'needs' => self::NEEDS_NOTHING],
     ];
 
@@ -63,6 +65,7 @@ final class Signals
             'hosting' => __('Hosting and cloud servers', 'vpndetection'),
             'relay' => __('Privacy relays', 'vpndetection'),
             'smtp' => __('Mail servers', 'vpndetection'),
+            'spoofed' => __('Forged crawlers', 'vpndetection'),
             'country' => __('Countries', 'vpndetection'),
             'unavailable' => __('Check unavailable', 'vpndetection'),
             'custom' => __('Custom rule', 'vpndetection'),
@@ -82,6 +85,7 @@ final class Signals
             'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan, judged by the network an address belongs to.', 'vpndetection'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'vpndetection'),
             'smtp' => __('Addresses that run a mail server. Home and mobile connections cannot, so a visitor from one is a server: a script, a bot or a hijacked machine.', 'vpndetection'),
+            'spoofed' => __('Visitors whose browser claims to be a crawler, such as Googlebot, from an address that crawler does not use. Each visitor\'s user agent goes with the lookup, so an address is looked up once for each user agent it comes with.', 'vpndetection'),
             'country' => __('Visitors from the countries you list, wherever they connect from.', 'vpndetection'),
             default => '',
         };
@@ -121,6 +125,9 @@ final class Signals
     {
         if ($signal === 'country') {
             return $countries === [] ? null : ['location' => ['country' => $countries]];
+        }
+        if ($signal === 'spoofed') {
+            return ['userAgent' => ['verdict' => 'spoofed']];
         }
         if ($signal === 'hosting' && $answer !== null && $answer->isRelay === true) {
             return null;

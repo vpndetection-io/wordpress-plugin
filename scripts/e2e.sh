@@ -46,6 +46,7 @@ MAIL=5.6.7.9
 GOOGLEBOT=66.249.66.1
 YANDEXBOT=5.255.253.1
 CLEAN=81.2.69.142
+GOOGLEBOT_AGENT='Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 MESSAGE="which this site does not allow"
 
 ./scripts/build.sh --no-zip
@@ -267,6 +268,15 @@ settings "{\"signals\":[\"country\"],\"countries\":\"RU\",\"areas\":$(areas page
 out="$(visit "$YANDEXBOT" http://wp/)"
 check "a search engine's crawler its operator vouches for is never refused, though its country is" "$out" "^HTTP/1.1 200"
 check "  ... and logged nowhere" "$(wp db query "SELECT COUNT(*) FROM wp_vpndetection_activity WHERE ip='${YANDEXBOT}'" --skip-column-names)" "^0$"
+stub_log="$(docker exec "${run}-stub" cat /tmp/stub.log)"
+check "a lookup carries no user agent while no area blocks forged crawlers" "$stub_log" " /${VPN} max-key"
+check_not "  ... none at all" "$stub_log" " ua="
+settings "{\"signals\":[\"spoofed\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
+out="$(visit "$CLEAN" http://wp/ -A "$GOOGLEBOT_AGENT")"
+check "Forged crawlers refuses a client posing as Googlebot" "$out" "^HTTP/1.1 403"
+check "  ... saying so" "$out" "posing as a crawler"
+check "  ... having sent its user agent" "$(docker exec "${run}-stub" cat /tmp/stub.log)" " /${CLEAN} max-key ua=Mozilla"
+check "  ... where a browser from that address is served" "$(visit "$CLEAN" http://wp/ -A 'Mozilla/5.0 Firefox/145.0')" "^HTTP/1.1 200"
 settings "{\"signals\":[\"vpn\",\"hosting\"],\"areas\":$(areas pages block),\"pages_scope\":\"site\"}"
 out="$(visit "$VPN" http://wp/wp-json/vpndetection/v1/check -H 'Content-Type: application/json' -d '{"path":"/"}')"
 check "the browser check refuses a VPN visitor" "$out" '"blocked":true'

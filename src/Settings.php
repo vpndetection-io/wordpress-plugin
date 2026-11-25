@@ -74,6 +74,17 @@ final class Settings
         return $this->get('areas')[$area]['signals'] ?? $this->get('signals');
     }
 
+    /** Whether an area that is on blocks forged crawlers, which needs each lookup to carry the visitor's User-Agent. */
+    public function sendsUserAgent(): bool
+    {
+        foreach (array_keys(self::AREAS) as $area) {
+            if ($this->action($area) !== 'off' && in_array('spoofed', $this->signals($area), true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function apiKey(): ?string
     {
         $key = defined('VPNDETECTION_API_KEY') ? (string) constant('VPNDETECTION_API_KEY') : (string) get_option(self::KEY_OPTION, '');
@@ -95,6 +106,9 @@ final class Settings
         }
         if ($verdict !== null && $verdict->signals === ['country']) {
             return __('This site is not available in your country.', 'vpndetection');
+        }
+        if ($verdict !== null && $verdict->signals === ['spoofed']) {
+            return __('This site does not accept requests from a client posing as a crawler.', 'vpndetection');
         }
         return __('Your connection comes through a VPN, proxy or hosting network, which this site does not allow. Turn it off and try again.', 'vpndetection');
     }

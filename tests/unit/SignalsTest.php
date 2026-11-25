@@ -13,6 +13,7 @@ use VPNDetection\WordPress\Vendor\VPNDetection\Location;
 use VPNDetection\WordPress\Vendor\VPNDetection\ProxyDetail;
 use VPNDetection\WordPress\Vendor\VPNDetection\PubproxyDetail;
 use VPNDetection\WordPress\Vendor\VPNDetection\SmtpDetail;
+use VPNDetection\WordPress\Vendor\VPNDetection\UserAgentVerdict;
 
 final class SignalsTest extends TestCase
 {
@@ -30,6 +31,24 @@ final class SignalsTest extends TestCase
             [['isResproxy' => true, 'resproxy' => ['hits' => ['gte' => 3]]], ['isHosting' => true]],
             Signals::condition(['resproxy', 'hosting'], 3),
         );
+    }
+
+    /** Forged crawlers is the agent's verdict, and an answer with none, the free plan's, lacks it. */
+    public function testForgedCrawlersReadTheAgentsVerdict(): void
+    {
+        $verdict = static fn (?string $v): Result => new Result(
+            ip: '81.2.69.142',
+            isVpn: false,
+            isBogon: false,
+            userAgent: $v === null ? null : new UserAgentVerdict(agent: 'Googlebot', kind: 'bot', verdict: $v),
+        );
+        $condition = Signals::condition(['spoofed'], 1);
+        $this->assertSame([['userAgent' => ['verdict' => 'spoofed']]], $condition);
+        $this->assertTrue(Condition::matches($condition, $verdict('spoofed')));
+        $this->assertFalse(Condition::matches($condition, $verdict('verified')));
+        $this->assertFalse(Condition::matches($condition, $verdict(null)));
+        $this->assertSame(['userAgent'], Condition::missingMembers($condition, $verdict(null)));
+        $this->assertFalse(Signals::served('spoofed', 'free'));
     }
 
     /** The condition is the SDK's own language, so the SDK's matcher decides it. */
