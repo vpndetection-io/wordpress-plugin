@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.3.2 - 2026-11-25
+
+### Fixes
+
+- Send only a crawler's user agent, at most four per address ([`e545e35`](https://github.com/vpndetection-io/wordpress-plugin/commit/e545e3552745e1dba3117ae66dc9cf90f91a2b52))
+
 ## 1.3.1 - 2026-11-25
 
 ### Fixes
