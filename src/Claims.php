@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VPNDetection\WordPress;
 
+use VPNDetection\WordPress\Vendor\VPNDetection\Middleware\Core;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -13,23 +15,16 @@ defined('ABSPATH') || exit;
  */
 final class Claims
 {
-    public const MAX_AGENTS = 4;
-
-    /**
-     * A User-Agent naming a crawler, the only kind whose verdict can be verified or spoofed. It errs toward
-     * matching: a browser taken for a crawler costs a lookup, a crawler missed is judged on its address alone.
-     */
-    private const CRAWLER = '/bot|crawl|spider|slurp|scan|-user\b|google|meta-|facebook|whatsapp|yeti|cohere'
-        . '|embedly|flipboard|ahrefs|screaming frog|lumar|parse\.ly|rssapi|ttd-content|pingdom|statuscake'
-        . '|site24x7|datadog|stripe|hookshot|censys|internetmeasurement|expanse/i';
+    public const MAX_AGENTS = Core::MAX_AGENTS_PER_ADDRESS;
 
     public function __construct(private readonly Store $store, private readonly int $ttl)
     {
     }
 
+    /** Whether an agent names a crawler, by the SDK's terms: the core sends no other for a verdict. */
     public static function namesCrawler(string $agent): bool
     {
-        return preg_match(self::CRAWLER, $agent) === 1;
+        return Core::namesCrawler($agent);
     }
 
     /**
