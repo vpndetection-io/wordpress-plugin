@@ -4,7 +4,7 @@ Tags: vpn, proxy, tor, woocommerce, spam
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -93,6 +93,9 @@ It sends visitors' IP addresses to VPNDetection for the areas you turn on, and a
 3. A held WooCommerce order and its note.
 
 == Changelog ==
+
+= 1.3.3 =
+* The bundled VPNDetection PHP library is now 4.21.1. Forged crawlers sends a user agent for the crawlers that library names, and no others.
 
 = 1.3.2 =
 * Forged crawlers sends a visitor's user agent only when it names a crawler, never a browser's, for at most four crawler user agents per address every six hours. A crawler an address claims past those is refused if one before it was.

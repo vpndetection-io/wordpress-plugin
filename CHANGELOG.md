@@ -2,6 +2,12 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.3.3 - 2026-11-26
+
+### Fixes
+
+- Bundle vpndetection 4.21.1 and name crawlers by its terms ([`b33a531`](https://github.com/vpndetection-io/wordpress-plugin/commit/b33a5313c26c4455ae1f2ba6cd8ef6e435dcf91d))
+
 ## 1.3.2 - 2026-11-25
 
 ### Fixes
