@@ -88,10 +88,10 @@ final class SignalsTest extends TestCase
 
     public function testWhichPlansServeWhat(): void
     {
-        foreach (['vpn', 'tor', 'relay', 'country', 'hosting'] as $signal) {
+        foreach (['vpn', 'tor', 'relay', 'country'] as $signal) {
             $this->assertTrue(Signals::served($signal, null), "{$signal} without a key");
         }
-        foreach (['pubproxy', 'resproxy', 'mobproxy', 'dcproxy', 'smtp'] as $signal) {
+        foreach (['pubproxy', 'resproxy', 'mobproxy', 'dcproxy', 'smtp', 'hosting'] as $signal) {
             $this->assertFalse(Signals::served($signal, null), "{$signal} without a key");
             $this->assertFalse(Signals::served($signal, 'free'), "{$signal} on a free-plan key, past its trial");
         }
@@ -122,15 +122,15 @@ final class SignalsTest extends TestCase
         $this->assertSame(['resproxy'], Condition::missingMembers($counted, $free));
     }
 
-    /** An answer without a key carries no is_hosting, but its network's type answers the same question. */
-    public function testHostingWithoutAKeyReadsTheNetworksType(): void
+    /** Hosting is a paid answer's is_hosting alone: a network's type an older free answer carries never stands in. */
+    public function testHostingIsAPaidAnswersIsHostingAlone(): void
     {
         $keyless = new Result(ip: '45.83.91.1', isVpn: true, isBogon: false, isTor: false, isRelay: false,
             asn: new Asn(asn: 9009, name: 'M247 Europe SRL', type: 'hosting'));
         $condition = Signals::condition(['hosting'], 1, $keyless);
-        $this->assertSame([['asn' => ['type' => 'hosting']]], $condition);
-        $this->assertTrue(Condition::matches($condition, $keyless));
-        $this->assertSame([], Condition::missingMembers($condition, $keyless));
+        $this->assertSame([['isHosting' => true]], $condition);
+        $this->assertFalse(Condition::matches($condition, $keyless));
+        $this->assertSame(['isHosting'], Condition::missingMembers($condition, $keyless));
         $keyed = new Result(ip: '45.83.91.1', isVpn: true, isBogon: false, isHosting: false,
             asn: new Asn(asn: 9009, name: 'M247 Europe SRL', type: 'hosting'));
         $this->assertFalse(Condition::matches(Signals::condition(['hosting'], 1, $keyed), $keyed), 'a keyed answer is taken at its word');

@@ -35,8 +35,8 @@ final class Signals
         'resproxy' => ['member' => 'isResproxy', 'detail' => 'resproxy', 'needs' => self::NEEDS_PAID],
         'mobproxy' => ['member' => 'isMobproxy', 'detail' => 'mobproxy', 'needs' => self::NEEDS_PAID],
         'dcproxy' => ['member' => 'isDcproxy', 'detail' => 'dcproxy', 'needs' => self::NEEDS_PAID],
-        // A paid plan answers is_hosting; without one it is read by its network's type, which every answer carries.
-        'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_NOTHING],
+        // A paid plan's alone: the free plan answers neither is_hosting nor, since the API's spec of 2026-11-26, the network's type.
+        'hosting' => ['member' => 'isHosting', 'detail' => 'hosting', 'needs' => self::NEEDS_PAID],
         'relay' => ['member' => 'isRelay', 'detail' => 'relay', 'needs' => self::NEEDS_NOTHING],
         'smtp' => ['member' => 'isSmtp', 'detail' => 'smtp', 'needs' => self::NEEDS_PAID],
         // The one signal judged on the visitor's User-Agent, which a lookup carries only while an area uses it.
@@ -131,9 +131,6 @@ final class Signals
         }
         if ($signal === 'hosting' && $answer !== null && $answer->isRelay === true) {
             return null;
-        }
-        if ($signal === 'hosting' && $answer !== null && $answer->isHosting === null && $answer->asn !== null) {
-            return ['asn' => ['type' => 'hosting']];
         }
         $def = self::ALL[$signal];
         $one = [$def['member'] => true];
