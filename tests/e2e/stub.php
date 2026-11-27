@@ -60,7 +60,7 @@ if ($path === '/api/v1/entitlement') {
         'org_id' => '85bb51e4-2eb6-4a31-8e4d-02ba8b98fe61',
         'apikey' => ['id' => '0ab424cc-7619-4dad-b027-afacdc2cedb0', 'expires' => null, 'allowed_cidrs' => []],
         'plan' => ['key' => $free ? 'free' : 'max-2026', 'tier' => $free ? 'free' : 'max', 'name' => $free ? 'Unlimited' : 'Max'],
-        // A free key's usage is its trial: 14 days from the org's first check, 250,000 checks at most.
+        // A free key's usage is its trial: days from the org's first check, a quota of checks at most.
         'usage' => $free
             ? [
                 'requests' => $key === 'trial-spent' ? 250000 : 1240,

@@ -226,7 +226,7 @@ final class Page
         if ($account instanceof Entitlement) {
             $usage = $account->usage;
             // The free plan, Unlimited, has no allowance to spend: its usage is its trial, the checks answered
-            // with every signal in the window the API names, 14 days from the org's first check, up to its quota.
+            // with every signal in the window the API names, from the org's first check, up to its quota.
             // Past either the trial is over for good, and checks go on with Unlimited's signals.
             $free = $account->plan->key === self::FREE_PLAN;
             $trialOver = $free && (($usage->quota > 0 && $usage->requests >= $usage->quota) || $usage->windowEnd->getTimestamp() <= time());
