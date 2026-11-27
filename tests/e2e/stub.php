@@ -159,15 +159,17 @@ if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
 }
 $keyless = [
     'ip' => $ip, 'is_vpn' => $flags['is_vpn'], 'is_relay' => $flags['is_relay'], 'is_tor' => $flags['is_tor'],
-    'relay' => $details['relay'], 'tor' => $details['tor'], 'location' => $location, 'asn' => $asn,
-    'is_anycast' => false, 'hostname' => 'host-' . str_replace(['.', ':'], '-', $ip) . '.example.net', 'is_bot' => in_array($ip, ['66.249.66.1', '5.255.253.1'], true),
+    'relay' => $details['relay'], 'tor' => $details['tor'], 'location' => $location,
+    'asn' => array_diff_key($asn, ['type' => true]),
+    'is_anycast' => false, 'hostname' => 'host-' . str_replace(['.', ':'], '-', $ip) . '.example.net',
 ];
 if ($key === '') {
     reply(200, $keyless);
 }
 // Every answer carries Unlimited's members; a paid one or the trial's adds the rest, and a verdict on the
 // User-Agent sent with it: Googlebot is borne out only on Google's crawler address.
-$paid = ['ip' => $ip] + $flags + $details + $keyless;
+$paid = ['ip' => $ip, 'asn' => $asn, 'is_bot' => in_array($ip, ['66.249.66.1', '5.255.253.1'], true)] + $flags + $details
+    + $keyless;
 if ($agent !== '') {
     $crawler = str_contains($agent, 'Googlebot');
     $paid['user_agent'] = [
