@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.3.4 - 2026-11-27
+
+### Fixes
+
+- Bundle vpndetection 4.22.0, which reads an answer without the network's type ([`9687bc7`](https://github.com/vpndetection-io/wordpress-plugin/commit/9687bc7e7f68b6509d79968024e884fe58fac2ed))
+- Hosting needs a paid plan or the trial ([`6345a9d`](https://github.com/vpndetection-io/wordpress-plugin/commit/6345a9d657facbfc2f9ba3eb74f7f98973e29258))
+
 ## 1.3.3 - 2026-11-26
 
 ### Fixes
