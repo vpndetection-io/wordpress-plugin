@@ -2,6 +2,13 @@
 
 What each release changed for you, newest first. Each line is a commit's summary, linked to its full description and diff.
 
+## 1.3.5 - 2026-11-28
+
+### Fixes
+
+- Count a free key's day of full answers on the account card ([`3c5e908`](https://github.com/vpndetection-io/wordpress-plugin/commit/3c5e9086267a5fb813ba4b6558950c24c52dcb3a))
+  - The card counts a free key's checks with every signal today and says when they reset, and once they are used, that checks go on with the core signals until then. The settings and readme describe checking without an account and with a free key more plainly, and a signal that needs every answer is badged Paid plan or free key.
+
 ## 1.3.4 - 2026-11-27
 
 ### Fixes
