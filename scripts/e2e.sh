@@ -194,19 +194,19 @@ check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics 
 wp option update vpndetection_api_key free-key > /dev/null
 visit "$CLEAN" -c /tmp/vpnd-admin http://wp/wp-login.php -d 'log=admin&pwd=correct-horse&wp-submit=Log+In' > /dev/null
 out="$(visit "$CLEAN" -b /tmp/vpnd-admin 'http://wp/wp-admin/options-general.php?page=vpndetection')"
-check "a free-plan key's account card names the Unlimited plan" "$out" "Connected, on the Unlimited plan\\."
-check "  ... and counts its trial, the checks with every signal until the window ends" "$out" "1,240 of 250,000 checks with every signal in your trial, until "
+check "a free-plan key's account card names the plan as the API does" "$out" "Connected, on the Free plan\\."
+check "  ... and counts the day's checks with every signal, to when they reset" "$out" "37 of 600 checks with every signal today, resetting at "
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check "a free-plan key within its trial blocks residential proxies" "$out" "$MESSAGE"
+check "a free-plan key within the day's full answers blocks residential proxies" "$out" "$MESSAGE"
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block),\"min_hits\":3}"
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
 check_not "  ... and counts sightings, letting one seen fewer times through" "$out" "$MESSAGE"
-wp option update vpndetection_api_key trial-spent > /dev/null
+wp option update vpndetection_api_key day-spent > /dev/null
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"
-check_not "a free-plan key past its trial cannot block residential proxies" "$out" "$MESSAGE"
+check_not "a free-plan key past the day's full answers cannot block residential proxies" "$out" "$MESSAGE"
 check "  ... and the settings say so" "$(wp option get vpndetection_diagnostics --format=json)" '"gaps":\{"signals":\["resproxy"\]'
-check "  ... and its account card says the trial has ended" "$(visit "$CLEAN" -b /tmp/vpnd-admin 'http://wp/wp-admin/options-general.php?page=vpndetection')" "Your trial of every signal has ended, so checks go on with the Unlimited plan&#039;s signals\\."
+check "  ... and its account card says checks go on with the core signals until the reset" "$(visit "$CLEAN" -b /tmp/vpnd-admin 'http://wp/wp-admin/options-general.php?page=vpndetection')" "Today&#039;s checks with every signal are used, so checks go on with the core signals until "
 wp option update vpndetection_api_key max-key > /dev/null
 settings "{\"signals\":[\"resproxy\"],\"areas\":$(areas login block)}"
 out="$(visit "$RESPROXY" http://wp/wp-login.php -d 'log=x&pwd=y&wp-submit=Log+In')"

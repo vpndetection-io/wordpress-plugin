@@ -1,9 +1,9 @@
 <?php
 
 // A stand-in for the VPNDetection API, answering the addresses the e2e scenarios use in the shapes the
-// real API answers them, by plan: no key, a free-plan key within its trial (`free-key`), one past it
-// (`trial-spent`), a paid one past its organization's overage cap (`capped-key`), or any other key as a
-// paid one.
+// real API answers them, by plan: no key, a free-plan key within the day's full answers (`free-key`), one
+// past them (`day-spent`), a paid one past its organization's overage cap (`capped-key`), or any other key
+// as a paid one.
 // Every request is appended to /tmp/stub.log, so a scenario can count lookups. Run with `php -S`.
 
 declare(strict_types=1);
@@ -55,19 +55,20 @@ if ($path === '/api/v1/entitlement') {
     if ($key === '' || $key === 'bad-key') {
         reply(401, ['error' => 'invalid API key']);
     }
-    $free = $key === 'free-key' || $key === 'trial-spent';
+    $free = $key === 'free-key' || $key === 'day-spent';
+    $dayStart = intdiv(time(), 86400) * 86400;
     reply(200, [
         'org_id' => '85bb51e4-2eb6-4a31-8e4d-02ba8b98fe61',
         'apikey' => ['id' => '0ab424cc-7619-4dad-b027-afacdc2cedb0', 'expires' => null, 'allowed_cidrs' => []],
-        'plan' => ['key' => $free ? 'free' : 'max-2026', 'tier' => $free ? 'free' : 'max', 'name' => $free ? 'Unlimited' : 'Max'],
-        // A free key's usage is its trial: days from the org's first check, a quota of checks at most.
+        'plan' => ['key' => $free ? 'free' : 'max-2026', 'tier' => $free ? 'free' : 'max', 'name' => $free ? 'Free' : 'Max'],
+        // A free key's usage is the UTC day's full answers, which the next midnight resets.
         'usage' => $free
             ? [
-                'requests' => $key === 'trial-spent' ? 250000 : 1240,
-                'quota' => 250000,
+                'requests' => $key === 'day-spent' ? 600 : 37,
+                'quota' => 600,
                 'hard_limit' => null,
-                'window_start' => gmdate('Y-m-d\\TH:i:s\\Z', time() - 3 * 86400),
-                'window_end' => gmdate('Y-m-d\\TH:i:s\\Z', time() + 11 * 86400),
+                'window_start' => gmdate('Y-m-d\\TH:i:s\\Z', $dayStart),
+                'window_end' => gmdate('Y-m-d\\TH:i:s\\Z', $dayStart + 86400),
             ]
             : [
                 'requests' => 1240,
@@ -166,8 +167,8 @@ $keyless = [
 if ($key === '') {
     reply(200, $keyless);
 }
-// Every answer carries Unlimited's members; a paid one or the trial's adds the rest, and a verdict on the
-// User-Agent sent with it: Googlebot is borne out only on Google's crawler address.
+// Every answer carries the core members; a paid one or a free key's full one adds the rest, and a verdict
+// on the User-Agent sent with it: Googlebot is borne out only on Google's crawler address.
 $paid = ['ip' => $ip, 'asn' => $asn, 'is_bot' => in_array($ip, ['66.249.66.1', '5.255.253.1'], true)] + $flags + $details
     + $keyless;
 if ($agent !== '') {
@@ -181,7 +182,7 @@ if ($agent !== '') {
 if ($key === 'free-key') {
     reply(200, $paid + ['trial_expired' => false]);
 }
-if ($key === 'trial-spent') {
+if ($key === 'day-spent') {
     reply(200, $keyless + ['trial_expired' => true]);
 }
 if ($key === 'capped-key') {

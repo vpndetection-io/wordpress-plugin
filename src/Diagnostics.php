@@ -41,7 +41,7 @@ final class Diagnostics
     }
 
     /**
-     * An answer past the organization's overage cap: a paid key answered with Unlimited's fields,
+     * An answer past the organization's overage cap: a paid key answered with the core fields,
      * uncharged, until the period resets or the cap is raised in Billing.
      */
     public function capReached(): void

@@ -25,8 +25,8 @@ defined('ABSPATH') || exit;
  * cached either way.
  *
  * Search engines crawl from cloud addresses, which a hosting rule would refuse, so their published
- * crawler addresses are never refused here, nor any search engine's crawler a paid answer or the
- * trial's says its operator vouches for.
+ * crawler addresses are never refused here, nor any search engine's crawler a paid answer or a free
+ * key's full one says its operator vouches for.
  */
 final class Pages
 {
@@ -123,7 +123,8 @@ final class Pages
 
     /**
      * Whether the answer is a search engine's crawler its operator vouches for. Only a paid answer or
-     * the trial's says whose bot an address is, so without one only the published ranges above pass.
+     * a free key's full one says whose bot an address is, so without one only the published ranges
+     * above pass.
      */
     public static function vouchedCrawler(Result $result): bool
     {

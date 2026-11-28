@@ -11,11 +11,11 @@ defined('ABSPATH') || exit;
 /**
  * What the plugin can block on, in the order the settings show it.
  *
- * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: on
- * Unlimited, the free plan, with a key or without one, a lookup carries `is_vpn`, Tor, relays, the
- * location and the network, and on a paid plan every flag and the detail behind it, a proxy's
- * sightings included. A key on the free plan also gets a trial: its account's lookups answer as a paid
- * plan's while it lasts, and the rest as Unlimited's, which `trial_expired` says.
+ * Each signal is one member of a lookup answer. Which plans answer it is the API's to say: on the
+ * free plan, with a key or without one, a lookup carries the core answer, `is_vpn`, Tor, relays and
+ * the location, and on a paid plan every flag and the detail behind it, a proxy's sightings
+ * included. A key on the free plan also gets full answers on its account's first lookups each day,
+ * and the core answer after, which `trial_expired` says.
  *
  * Of the services an address runs, only a mail server is a signal: home and mobile lines cannot run
  * one, while routers and home servers answer SSH, web and DNS. Carrier, satellite, BitTorrent and
@@ -82,7 +82,7 @@ final class Signals
             'resproxy' => __('Home connections rented out as proxies.', 'vpndetection'),
             'mobproxy' => __('Phone connections rented out as proxies. Carriers share these addresses with ordinary customers.', 'vpndetection'),
             'dcproxy' => __('Proxies running in datacenters.', 'vpndetection'),
-            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run. Without a paid plan, judged by the network an address belongs to.', 'vpndetection'),
+            'hosting' => __('Servers at hosting and cloud providers, where bots and scripts run.', 'vpndetection'),
             'relay' => __('iCloud Private Relay and company web gateways. Mostly ordinary people.', 'vpndetection'),
             'smtp' => __('Addresses that run a mail server. Home and mobile connections cannot, so a visitor from one is a server: a script, a bot or a hijacked machine.', 'vpndetection'),
             'spoofed' => __('Visitors whose browser claims to be a crawler, such as Googlebot, from an address that crawler does not use. A user agent naming a crawler goes with the lookup, for at most four of them per address while answers are kept.', 'vpndetection'),
@@ -142,7 +142,7 @@ final class Signals
 
     /**
      * Whether a plan tier answers a signal on every lookup; null tier is a keyless client, and `free`
-     * the free plan's, which answers every signal only while its account's trial lasts.
+     * the free plan's, which answers every signal only on its account's first lookups each day.
      */
     public static function served(string $signal, ?string $tier): bool
     {

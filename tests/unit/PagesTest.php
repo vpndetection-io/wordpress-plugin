@@ -25,7 +25,7 @@ final class PagesTest extends TestCase
         $this->assertFalse(Pages::vouchedCrawler(self::bot(['scanner'], true)), 'a declared scanner');
     }
 
-    /** is_bot alone says nothing of whose bot it is, and an answer without a key, or past the trial, has neither. */
+    /** is_bot alone says nothing of whose bot it is, and an answer without a key, or past a free key's full answers, has neither. */
     public function testAKeylessAnswerLetsNoCrawlerThrough(): void
     {
         $this->assertFalse(Pages::vouchedCrawler(new Result(ip: '5.255.253.1', isVpn: false, isBogon: false, isBot: true)));

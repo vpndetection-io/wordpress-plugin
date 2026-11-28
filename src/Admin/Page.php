@@ -29,8 +29,6 @@ final class Page
     private const GROUP = 'vpndetection';
     private const ACCOUNT_CACHE = 'vpndetection_account';
     private const SET_UP = 'vpndetection_set_up';
-    /** The plan an account with no subscription is on, which VPNDetection calls Unlimited. */
-    private const FREE_PLAN = 'free';
 
     public function __construct(private readonly Plugin $plugin)
     {
@@ -224,40 +222,11 @@ final class Page
         echo '<div class="vpnd-card" id="vpnd-account">';
         echo '<h2>' . esc_html__('Account', 'vpndetection') . '</h2>';
         if ($account instanceof Entitlement) {
-            $usage = $account->usage;
-            // The free plan, Unlimited, has no allowance to spend: its usage is its trial, the checks answered
-            // with every signal in the window the API names, from the org's first check, up to its quota.
-            // Past either the trial is over for good, and checks go on with Unlimited's signals.
-            $free = $account->plan->key === self::FREE_PLAN;
-            $trialOver = $free && (($usage->quota > 0 && $usage->requests >= $usage->quota) || $usage->windowEnd->getTimestamp() <= time());
-            $until = wp_date(get_option('date_format'), $usage->windowEnd->getTimestamp());
-            if ($trialOver) {
-                $line = sprintf(
-                    /* translators: %s: the free plan's name, "Unlimited". */
-                    __('Your trial of every signal has ended, so checks go on with the %s plan\'s signals.', 'vpndetection'),
-                    $account->plan->name,
-                );
-            } elseif ($free) {
-                $line = sprintf(
-                    /* translators: 1: checks made with every signal; 2: how many the trial gives every signal; 3: a date. */
-                    __('%1$s of %2$s checks with every signal in your trial, until %3$s.', 'vpndetection'),
-                    number_format_i18n($usage->requests),
-                    number_format_i18n($usage->quota),
-                    $until,
-                );
-            } else {
-                $line = sprintf(
-                    /* translators: 1: checks made; 2: checks included; 3: a date. */
-                    __('%1$s of %2$s checks used this period, which resets on %3$s.', 'vpndetection'),
-                    number_format_i18n($usage->requests),
-                    number_format_i18n($usage->quota),
-                    $until,
-                );
-            }
+            $line = AccountLine::of($account, time());
             printf(
                 '<p><strong>%s</strong> %s</p>',
                 esc_html(sprintf(
-                    /* translators: %s: the plan's name, such as "Unlimited" or "Data". */
+                    /* translators: %s: the plan's name, such as "Data". */
                     __('Connected, on the %s plan.', 'vpndetection'),
                     $account->plan->name,
                 )),
@@ -270,7 +239,7 @@ final class Page
                 $account->plan->tier === 'free' ? esc_html__('Upgrade for every signal', 'vpndetection') : esc_html__('Manage plan', 'vpndetection'),
             );
             if (!$settings->keyInConfig()) {
-                $this->postButton('vpndetection_disconnect', __('Disconnect', 'vpndetection'), 'button-link-delete', __('Disconnect this site? It goes back to checking without an account, which catches no proxies.', 'vpndetection'));
+                $this->postButton('vpndetection_disconnect', __('Disconnect', 'vpndetection'), 'button-link-delete', __('Disconnect this site? It goes back to checking without an account, which catches no proxies or hosting networks.', 'vpndetection'));
             }
             echo '</div>';
             if ($settings->keyInConfig()) {
@@ -294,7 +263,7 @@ final class Page
             return;
         }
         echo '<p>' . esc_html__('Connect a VPNDetection account to try every signal, the proxies included. A paid plan checks every signal on every visit.', 'vpndetection') . '</p>';
-        echo '<p class="description">' . esc_html__('Without an account the plugin checks for VPNs, Tor, privacy relays and countries, with no cap.', 'vpndetection') . '</p>';
+        echo '<p class="description">' . esc_html__('You can try the plugin without an account: it checks for VPNs, Tor, privacy relays and countries.', 'vpndetection') . '</p>';
         printf(
             '<p><button type="button" class="button button-primary" id="vpnd-connect">%s</button> <span id="vpnd-connect-status" aria-live="polite"></span></p>',
             esc_html__('Connect with VPNDetection', 'vpndetection'),
@@ -417,7 +386,7 @@ final class Page
         foreach (Signals::keys() as $signal) {
             $badge = '';
             if (!Signals::served($signal, $tier)) {
-                $badge = __('Needs a paid plan', 'vpndetection');
+                $badge = __('Paid plan or free key', 'vpndetection');
             }
             $list = '';
             if ($signal === 'country' && $countries !== null) {
@@ -608,7 +577,7 @@ final class Page
             esc_html__('Proxy sightings', 'vpndetection'),
             esc_attr($name),
             (int) $settings->get('min_hits'),
-            esc_html__('Residential, mobile and datacenter proxies count only once an address has been seen in a proxy pool this many times. 1 counts every sighting; a higher number spares home addresses a proxy used once. Counting sightings needs a paid plan.', 'vpndetection'),
+            esc_html__('Residential, mobile and datacenter proxies count only once an address has been seen in a proxy pool this many times. 1 counts every sighting; a higher number spares home addresses a proxy used once. Counting sightings needs a paid plan or a free key\'s full answers.', 'vpndetection'),
         );
         printf('<tr><th scope="row">%s</th><td><fieldset>', esc_html__('When a check fails', 'vpndetection'));
         printf(
@@ -752,7 +721,7 @@ final class Page
         // phpcs:enable
         $messages = [
             'connected' => ['success', __('Connected. The plugin now checks with your own allowance.', 'vpndetection')],
-            'disconnected' => ['success', __('Disconnected. The plugin is back to checking without an account, which catches no proxies.', 'vpndetection')],
+            'disconnected' => ['success', __('Disconnected. The plugin is back to checking without an account, which catches no proxies or hosting networks.', 'vpndetection')],
             'nokey' => ['error', __('Paste a key first.', 'vpndetection')],
             /* translators: %s: the reason, as VPNDetection gave it. */
             'badkey' => ['error', sprintf(__('VPNDetection did not accept that key: %s', 'vpndetection'), $detail)],

@@ -19,3 +19,18 @@ function sanitize_key(string $key): string
 {
     return preg_replace('/[^a-z0-9_\-]/', '', strtolower($key)) ?? '';
 }
+
+function get_option(string $name, mixed $default = false): mixed
+{
+    return ['time_format' => 'H:i', 'date_format' => 'Y-m-d'][$name] ?? $default;
+}
+
+function wp_date(string $format, ?int $timestamp = null): string
+{
+    return gmdate($format, $timestamp);
+}
+
+function number_format_i18n(int|float $number): string
+{
+    return number_format($number);
+}

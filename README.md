@@ -17,7 +17,7 @@ Open Settings > VPNDetection and click Connect with VPNDetection. A tab opens on
 define('VPNDETECTION_API_KEY', 'your-api-key');
 ```
 
-VPNDetection's free plan, Unlimited, checks for VPNs, Tor, privacy relays and countries on every visit, with no cap and no account needed. Connect a free account to try every signal, hosting and public, residential, mobile and datacenter proxies included; a paid plan checks every signal on every visit, with how often each proxy was seen.
+You can try it without an account: it checks for VPNs, Tor, privacy relays and countries. A free key answers more, so connect a free account to try every signal, hosting and public, residential, mobile and datacenter proxies included; a paid plan checks every signal on every visit, with how often each proxy was seen. The plans are at [vpndetection.io/pricing](https://vpndetection.io/pricing).
 
 Nothing is checked until you turn an area on.
 
@@ -37,7 +37,7 @@ Start an area on Log only: the Activity tab then lists who it would have caught,
 
 ## What to block
 
-VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, addresses that run a mail server, forged crawlers, and the countries you list by their two-letter codes. Every area blocks on the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. A privacy relay counts as a relay alone, even where it runs on a hosting network, so iCloud Private Relay visitors aren't refused as hosting. The settings mark each signal your plan doesn't answer, since an absent answer can never match. A visitor refused for their country alone is told the site isn't available there, rather than to turn off a VPN. Forged crawlers, on a paid plan, refuses a client whose user agent claims a crawler, such as Googlebot, from an address that crawler doesn't use; while an area uses it, a lookup carries the visitor's user agent when it names a crawler, never a browser's, for at most four crawler agents per address every six hours, and a crawler an address claims past those is refused if one before it was.
+VPNs, Tor, public proxies, residential proxies, mobile proxies, datacenter proxies, hosting and cloud servers, privacy relays such as iCloud Private Relay, addresses that run a mail server, forged crawlers, and the countries you list by their two-letter codes. Every area blocks on the same list unless you give it one of its own, so comments can catch hosting servers while sign-in leaves them alone. A privacy relay counts as a relay alone, even where it runs on a hosting network, so iCloud Private Relay visitors aren't refused as hosting. The settings mark each signal your plan doesn't answer, since an absent answer can never match. A visitor refused for their country alone is told the site isn't available there, rather than to turn off a VPN. Forged crawlers, on a paid plan or a free key's full answers, refuses a client whose user agent claims a crawler, such as Googlebot, from an address that crawler doesn't use; while an area uses it, a lookup carries the visitor's user agent when it names a crawler, never a browser's, for at most four crawler agents per address every six hours, and a crawler an address claims past those is refused if one before it was.
 
 Residential, mobile and datacenter proxies can also be held to a number of sightings: at 3, an address counts only once it has been seen in a proxy pool three times, which spares a home connection that was rented out once.
 
@@ -53,7 +53,7 @@ The settings page shows the address the plugin sees for you, and says so when yo
 
 A page cache answers without running WordPress, so a page checked only on the server would reach whoever the cache serves. A protected page therefore carries a small script that asks the site, from the visitor's browser, whether this visitor may see it; it works with any cache, but not for a visitor who turns scripts off. For pages that must never reach a refused visitor, tick "Keep these pages out of the page cache" and the server checks every visit. A refusal is never cached either way.
 
-Search engines crawl from cloud addresses, so Google's, Bing's, Apple's and DuckDuckGo's published crawler addresses are never refused from your pages. On a paid plan or the trial, the answer also says whose bot an address is and whether its operator vouches for it, so any search engine's crawler it vouches for is never refused from them either.
+Search engines crawl from cloud addresses, so Google's, Bing's, Apple's and DuckDuckGo's published crawler addresses are never refused from your pages. On a paid plan or a free key's full answers, the answer also says whose bot an address is and whether its operator vouches for it, so any search engine's crawler it vouches for is never refused from them either.
 
 ## Costs and failures
 
